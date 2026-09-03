@@ -1,0 +1,9 @@
+{
+  "name": "Astra Music",
+  "short_name": "Astra",
+  "description": "A beautifully designed music player built for smooth, effortless listening.",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#F3EFE9",
+  "theme_color": "#F3EFE9"
+}
