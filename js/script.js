@@ -10,10 +10,6 @@
     rating: 4.8
   };
 
-  document.getElementById('metaVersion').textContent = 'Version ' + ASTRA_CONFIG.version;
-  document.getElementById('metaPlatform').textContent = ASTRA_CONFIG.platform;
-  document.getElementById('metaSize').textContent = ASTRA_CONFIG.fileSize;
-
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   const navInner = document.getElementById('navInner');
@@ -152,50 +148,5 @@
     });
   });
 
-  const btn = document.getElementById('downloadBtn');
-  const statusText = document.getElementById('dlStatusText');
-
-  function resetBtn(){
-    btn.classList.remove('is-loading', 'is-success', 'is-error');
-    statusText.textContent = '';
-  }
-
-  btn.addEventListener('click', async () => {
-    if (btn.classList.contains('is-loading')) return;
-    resetBtn();
-
-    if (!ASTRA_CONFIG.downloadUrl || ASTRA_CONFIG.downloadUrl === 'YOUR_APK_DOWNLOAD_LINK') {
-      btn.classList.add('is-error');
-      statusText.textContent = 'No download link has been configured yet.';
-      return;
-    }
-
-    btn.classList.add('is-loading');
-    statusText.textContent = 'Preparing download…';
-
-    try {
-      const link = document.createElement('a');
-      link.href = ASTRA_CONFIG.downloadUrl;
-      link.setAttribute('download', '');
-      document.body.appendChild(link);
-
-      await new Promise(r => setTimeout(r, 500));
-      statusText.textContent = 'Download starting…';
-
-      link.click();
-      document.body.removeChild(link);
-
-      await new Promise(r => setTimeout(r, 500));
-      btn.classList.remove('is-loading');
-      btn.classList.add('is-success');
-      statusText.textContent = 'Check your notifications or downloads folder to install.';
-
-      setTimeout(() => { resetBtn(); }, 5000);
-    } catch (err) {
-      btn.classList.remove('is-loading');
-      btn.classList.add('is-error');
-      statusText.textContent = 'Something went wrong. Please try again.';
-    }
-  });
 
 })();
