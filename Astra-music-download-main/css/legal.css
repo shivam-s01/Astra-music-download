@@ -60,3 +60,24 @@
 .legal-actions .btn{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;}
 .legal-actions .btn-ghost{border:1px solid var(--border);color:var(--text);padding:11px 16px;border-radius:999px;}
 .legal-actions .btn-primary{padding:11px 16px;border-radius:999px;}
+
+/* ---------- Astra legal-page polish ---------- */
+.legal-hero{
+  position:relative;
+  padding:150px 0 52px;
+  background:linear-gradient(180deg, rgba(255,255,255,.38), rgba(255,255,255,0));
+}
+.legal-body{position:relative;z-index:1;padding-top:56px;}
+.legal-wrap{max-width:760px;}
+.legal-wrap h2{margin-top:44px;font-weight:500;}
+.legal-wrap h3{
+  font-size:15px;font-weight:650;color:var(--text);
+  margin:26px 0 9px;
+}
+.legal-wrap p,.legal-wrap ul{font-size:15.5px;line-height:1.8;}
+.legal-note{
+  margin:0 0 30px;padding:18px 20px;border:1px solid var(--border);
+  border-radius:16px;background:rgba(255,255,255,.62);
+  color:var(--text-dim);font-size:14px;line-height:1.7;
+}
+.legal-actions{margin-top:42px;}
