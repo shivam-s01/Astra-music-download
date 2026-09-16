@@ -6,16 +6,18 @@
     platform: "Android",
     downloadUrl: "https://github.com/shivam-s01/Aurum-app/releases/download/build646/app-arm64-v8a-release.apk",
     fileSize: "32.4 MB",
-    downloads: 18000,
+    downloads: 19000,
     rating: 4.8
   };
 
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   const navInner = document.getElementById('navInner');
-  window.addEventListener('scroll', () => {
-    navInner.classList.toggle('scrolled', window.scrollY > 12);
-  }, { passive: true });
+  if (navInner) {
+    const updateNav = () => navInner.classList.toggle('scrolled', window.scrollY > 12);
+    updateNav();
+    window.addEventListener('scroll', updateNav, { passive: true });
+  }
 
   const coffeeFabWrap = document.getElementById('coffeeFabWrap');
   const faqSection = document.getElementById('faq');

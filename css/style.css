@@ -285,16 +285,6 @@ footer{border-top:1px solid var(--border); padding:56px 0 32px;}
 .footer-col a:hover{color:var(--text);}
 .footer-bottom{display:flex; justify-content:space-between; align-items:center; padding-top:24px; border-top:1px solid var(--border); font-size:12.5px; color:var(--text-faint); flex-wrap:wrap; gap:12px;}
 
-.footer-dark{background:#0E0C10; margin-top:0;}
-.footer-dark-inner{padding:64px 24px 56px; display:flex; flex-direction:column; align-items:center; text-align:center; gap:18px;}
-.footer-dark-brand{display:flex; align-items:center; gap:14px; text-decoration:none;}
-.footer-dark-mark{width:44px; height:44px; border-radius:12px; object-fit:cover;}
-.footer-dark-brand span{font-family:var(--font-serif); font-size:30px; font-weight:600; color:#fff; letter-spacing:-0.01em;}
-.footer-dark-desc{max-width:480px; font-size:14px; line-height:1.7; color:rgba(255,255,255,0.55);}
-.footer-dark-links{display:flex; gap:28px; flex-wrap:wrap; justify-content:center; margin-top:6px;}
-.footer-dark-links a{font-size:13px; color:rgba(255,255,255,0.45); transition:color .2s var(--ease-soft);}
-.footer-dark-links a:hover{color:#fff;}
-
 .skip-link{position:absolute; top:-100px; left:16px; z-index:200; background:var(--text); color:var(--bg); padding:10px 16px; border-radius:8px; font-size:13px; font-weight:600; transition:top .2s var(--ease-soft);}
 
 /* Why Astra section */
@@ -548,4 +538,39 @@ footer{border-top:1px solid var(--border); padding:56px 0 32px;}
 
 @media (prefers-reduced-motion: reduce){
   .faq-answer, .faq-icon::before, .faq-icon::after, .faq-answer-inner p{transition:none;}
+}
+
+
+/* ---------- Astra polish / interaction safety ---------- */
+html, body { min-height:100%; }
+body { isolation:isolate; }
+.atmosphere { z-index:-2; }
+.grain { z-index:-1; opacity:.018; }
+.cursor-glow { z-index:0; }
+main, footer { position:relative; z-index:1; }
+.nav { z-index:1000; }
+.nav-inner { position:relative; z-index:1001; }
+footer { background:rgba(243,239,233,.72); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); }
+
+a, button { -webkit-tap-highlight-color:transparent; }
+a { text-underline-offset:3px; }
+.footer-col a { position:relative; }
+.footer-col a:focus-visible { outline:2px solid var(--accent); outline-offset:4px; border-radius:4px; }
+
+.legal-site-header{
+  position:fixed; top:0; left:0; right:0; z-index:1000;
+  padding:16px 24px;
+}
+@media (min-width:768px){ .legal-site-header{padding:20px 40px;} }
+.legal-site-header .nav-inner{max-width:1120px;}
+.legal-site-header .brand{padding-left:8px;}
+.legal-site-header .brand-mark{width:24px;height:24px;}
+
+@media (max-width:767px){
+  .wrap{padding-left:20px;padding-right:20px;}
+  .nav{padding-left:12px;padding-right:12px;}
+  .nav-inner{padding:9px 10px;}
+  .nav-cta{padding:9px 14px;}
+  .brand{font-size:17px;}
+  .footer-links{gap:28px 40px;}
 }

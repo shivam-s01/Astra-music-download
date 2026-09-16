@@ -1,33 +1,19 @@
-# Astra Music — Download Page
+# Astra Music
 
-Landing page for Astra Music (premium Android music streaming app).
+Astra Music is a clean Android music-player project focused on a simple listening experience.
 
-## Structure
-```
-astra-music-download/
-├── index.html      # Main page (HTML only)
-├── css/
-│   └── style.css    # All styles
-├── js/
-│   └── script.js    # Download button logic
-└── README.md
-```
+## Website
 
-## Note
-`index.html` references `manifest.json` — add your PWA manifest file
-in this same folder if you have one, otherwise remove that `<link>` tag.
+The included landing page contains the download area, feature overview, screenshots, FAQ, Privacy Policy, Terms & Conditions, and Contact page.
 
-## Push to GitHub (Termux)
+## Final polish
 
-```bash
-cd astra-music-download
-git init
-git add .
-git commit -m "Initial commit: split HTML/CSS/JS"
-git branch -M main
-git remote add origin https://github.com/<your-username>/astra-music-download.git
-git push -u origin main
-```
+- Clear, persistent footer navigation
+- Dedicated and readable legal pages
+- Responsive mobile layout
+- Accessible focus states and touch targets
+- Reduced-motion support
+- Resilient layering so content remains visible above decorative backgrounds
+- Consistent typography, spacing, cards, buttons and navigation
 
-Agar repo already GitHub pe bana chuka hai to `git init` ke baad seedha
-`remote add` aur `push` kar sakta hai.
+Before publishing, replace any release-specific download URL or support details with the official values for the release.
