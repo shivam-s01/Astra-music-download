@@ -1,0 +1,10 @@
+{
+  "name": "Astra Music",
+  "short_name": "Astra",
+  "description": "A clean Android music player built around your library and the way you listen.",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#F3EFE9",
+  "theme_color": "#F3EFE9",
+  "lang": "en"
+}

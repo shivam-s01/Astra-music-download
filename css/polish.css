@@ -1,0 +1,45 @@
+/* Astra final polish: visibility, hierarchy, touch targets and resilient layering. */
+main, footer, .legal-site-header { position:relative; z-index:3; }
+footer { isolation:isolate; overflow:visible; }
+.footer-top { gap:48px; }
+.footer-links { display:grid; grid-template-columns:repeat(3,minmax(110px,1fr)); gap:42px; min-width:min(100%,420px); }
+.footer-col { min-width:0; }
+.footer-col h4 { color:var(--text-dim); margin-bottom:16px; }
+.footer-col a {
+  position:relative; display:inline-flex; align-items:center; min-height:40px;
+  margin:0; padding:4px 0; color:var(--text); font-weight:520;
+  border-radius:8px; transition:color .2s var(--ease-soft), transform .2s var(--ease-soft);
+}
+.footer-col a::after {
+  content:""; position:absolute; left:0; right:100%; bottom:1px; height:1px;
+  background:var(--accent); transition:right .25s var(--ease-soft);
+}
+.footer-col a:hover { color:var(--accent); transform:translateX(2px); }
+.footer-col a:hover::after { right:0; }
+.footer-legal-note {
+  margin-top:28px; padding:18px 20px; border:1px solid var(--border);
+  border-radius:18px; background:rgba(255,255,255,.56);
+  color:var(--text-dim); font-size:13px; line-height:1.65;
+}
+.footer-legal-note strong { color:var(--text); font-weight:650; }
+.legal-site-header .nav-inner { box-shadow:0 8px 30px -18px rgba(20,15,10,.18); }
+.legal-hero { z-index:2; }
+.legal-wrap { position:relative; z-index:2; }
+.legal-wrap a { font-weight:600; }
+.legal-actions .btn { min-height:44px; }
+@media (max-width:767px) {
+  .footer-links { grid-template-columns:repeat(2,minmax(0,1fr)); gap:30px 28px; min-width:0; }
+  .footer-col:last-child { grid-column:1/-1; }
+  .footer-col a { min-height:42px; }
+  .footer-bottom { padding-bottom:max(8px, env(safe-area-inset-bottom)); }
+}
+@media (max-width:380px) {
+  .footer-links { grid-template-columns:1fr; }
+  .footer-col:last-child { grid-column:auto; }
+}
+@media print {
+  .nav, .legal-site-header, .cursor-glow, .grain, .atmosphere, .coffee-fab-wrap { display:none !important; }
+  body { background:#fff; }
+  main, footer { z-index:auto; }
+  .legal-hero { padding-top:32px; }
+}
