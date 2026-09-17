@@ -1,154 +1,44 @@
-(function(){
-  'use strict';
+(() => {
+  const nav = document.querySelector('.nav-inner');
+  const progress = document.querySelector('.scroll-progress span');
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  const ASTRA_CONFIG = {
-    version: "2.3.2",
-    platform: "Android",
-    downloadUrl: "https://github.com/shivam-s01/Aurum-app/releases/download/build646/app-arm64-v8a-release.apk",
-    fileSize: "32.4 MB",
-    downloads: 19000,
-    rating: 4.8
+  const updateScroll = () => {
+    if (nav) nav.classList.toggle('scrolled', window.scrollY > 18);
+    if (progress) {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      progress.style.width = max > 0 ? `${(window.scrollY / max) * 100}%` : '0%';
+    }
   };
+  updateScroll();
+  window.addEventListener('scroll', updateScroll, {passive:true});
 
-  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  const navInner = document.getElementById('navInner');
-  if (navInner) {
-    const updateNav = () => navInner.classList.toggle('scrolled', window.scrollY > 12);
-    updateNav();
-    window.addEventListener('scroll', updateNav, { passive: true });
-  }
-
-  const coffeeFabWrap = document.getElementById('coffeeFabWrap');
-  const faqSection = document.getElementById('faq');
-
-  if (coffeeFabWrap) {
-    let pastFaq = false;
-
-    if (faqSection && 'IntersectionObserver' in window) {
-      // Once the FAQ section comes into view, treat the coffee nudge as
-      // "shown its moment" and keep it hidden for the rest of the page
-      // (footer, download card, etc.) — it shouldn't linger over content.
-      const faqIo = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            pastFaq = true;
-            coffeeFabWrap.classList.remove('visible');
-            faqIo.disconnect();
-          }
-        });
-      }, { threshold: 0, rootMargin: '0px 0px -60% 0px' });
-      faqIo.observe(faqSection);
-    }
-
-    window.addEventListener('scroll', () => {
-      if (pastFaq) return;
-      // A small scroll (a bit past one screen's worth of nudging, ~180px)
-      // is enough to reveal the button and its message together; scrolling
-      // back up near the top hides both again.
-      coffeeFabWrap.classList.toggle('visible', window.scrollY > 180);
-    }, { passive: true });
-  }
-
-  const glow = document.getElementById('cursorGlow');
-  const deviceFrame = document.getElementById('deviceFrame');
-  const canHover = window.matchMedia('(hover: hover)').matches && window.innerWidth > 900;
-
-  if (canHover && !prefersReducedMotion) {
-    let rafPending = false, mouseX = 0, mouseY = 0;
-    window.addEventListener('mousemove', (e) => {
-      mouseX = e.clientX; mouseY = e.clientY;
-      glow.classList.add('active');
-      if (!rafPending) {
-        rafPending = true;
-        requestAnimationFrame(() => {
-          glow.style.transform = `translate(${mouseX}px, ${mouseY}px) translate(-50%,-50%)`;
-          rafPending = false;
-        });
-      }
-    }, { passive: true });
-    window.addEventListener('mouseleave', () => glow.classList.remove('active'));
-
-    const heroVisual = document.querySelector('.hero-visual');
-    if (heroVisual && deviceFrame) {
-      heroVisual.addEventListener('mousemove', (e) => {
-        const rect = heroVisual.getBoundingClientRect();
-        const px = (e.clientX - rect.left) / rect.width - 0.5;
-        const py = (e.clientY - rect.top) / rect.height - 0.5;
-        deviceFrame.style.animation = 'none';
-        deviceFrame.style.transform = `rotateY(${-6 + px * 10}deg) rotateX(${2 - py * 8}deg)`;
-      }, { passive: true });
-      heroVisual.addEventListener('mouseleave', () => {
-        deviceFrame.style.transform = '';
-        deviceFrame.style.animation = '';
-      });
-    }
-  }
-
-  if ('IntersectionObserver' in window && !prefersReducedMotion) {
-    const revealEls = document.querySelectorAll('.reveal:not(.in)');
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) { entry.target.classList.add('in'); io.unobserve(entry.target); }
-      });
-    }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
-    revealEls.forEach(el => io.observe(el));
+  const items = document.querySelectorAll('.reveal');
+  if (reduced || !('IntersectionObserver' in window)) {
+    items.forEach(el => el.classList.add('in'));
   } else {
-    document.querySelectorAll('.reveal').forEach(el => el.classList.add('in'));
-  }
-
-  // Fail-safe: content must never stay hidden. If any .reveal element
-  // hasn't been marked .in within a second (slow device, IO edge case,
-  // fast scroll past the trigger point, etc.), force it visible.
-  setTimeout(() => {
-    document.querySelectorAll('.reveal:not(.in)').forEach(el => el.classList.add('in'));
-  }, 1000);
-
-  const countEl = document.querySelector('[data-count]');
-  if (countEl && !prefersReducedMotion) {
-    const target = parseInt(countEl.dataset.count, 10);
-    let started = false;
-    const startCount = () => {
-      if (started) return;
-      started = true;
-      const duration = 1400, startTime = performance.now();
-      function tick(now){
-        const p = Math.min((now - startTime) / duration, 1);
-        const eased = 1 - Math.pow(1 - p, 3);
-        const val = Math.floor(eased * target);
-        countEl.textContent = val >= 1000 ? (val/1000).toFixed(val % 1000 === 0 ? 0 : 1) + 'K+' : val;
-        if (p < 1) requestAnimationFrame(tick);
-        else countEl.textContent = (target/1000) + 'K+';
-      }
-      requestAnimationFrame(tick);
-    };
-    if ('IntersectionObserver' in window) {
-      const statIo = new IntersectionObserver((entries) => {
-        entries.forEach(e => { if (e.isIntersecting) { startCount(); statIo.disconnect(); } });
-      }, { threshold: 0.5 });
-      statIo.observe(countEl);
-    } else {
-      countEl.textContent = (target/1000) + 'K+';
-    }
-  } else if (countEl) {
-    countEl.textContent = (parseInt(countEl.dataset.count,10)/1000) + 'K+';
-  }
-
-  const faqItems = document.querySelectorAll('.faq-item');
-  faqItems.forEach(item => {
-    const question = item.querySelector('.faq-question');
-    question.addEventListener('click', () => {
-      const isOpen = item.classList.contains('open');
-      faqItems.forEach(other => {
-        other.classList.remove('open');
-        other.querySelector('.faq-question').setAttribute('aria-expanded', 'false');
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in');
+          io.unobserve(entry.target);
+        }
       });
-      if (!isOpen) {
-        item.classList.add('open');
-        question.setAttribute('aria-expanded', 'true');
-      }
+    }, {threshold:.1, rootMargin:'0px 0px -30px 0px'});
+    items.forEach(el => io.observe(el));
+  }
+
+  const tiltTarget = document.querySelector('[data-tilt]');
+  if (tiltTarget && !reduced && window.matchMedia('(hover:hover)').matches) {
+    const phone = tiltTarget.querySelector('.phone');
+    tiltTarget.addEventListener('pointermove', event => {
+      const r = tiltTarget.getBoundingClientRect();
+      const x = (event.clientX - r.left) / r.width - .5;
+      const y = (event.clientY - r.top) / r.height - .5;
+      phone.style.transform = `rotateY(${x * 5 - 1}deg) rotateX(${y * -3 + 1}deg) translateY(-4px)`;
     });
-  });
-
-
+    tiltTarget.addEventListener('pointerleave', () => {
+      phone.style.transform = '';
+    });
+  }
 })();
