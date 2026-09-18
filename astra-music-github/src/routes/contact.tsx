@@ -1,0 +1,4 @@
+import { createFileRoute } from "@tanstack/react-router";
+import { LegalPage } from "@/components/LegalPage";
+export const Route = createFileRoute("/contact")({ head:()=>({meta:[{title:"Contact — Astra Music"},{name:"description",content:"Support information for Astra Music."},{property:"og:title",content:"Contact — Astra Music"},{property:"og:description",content:"Support information for Astra Music."},{property:"og:type",content:"website"},{name:"twitter:card",content:"summary"}]}), component:Contact });
+function Contact(){return <LegalPage eyebrow="Support" title="Contact"><p>Need help with Astra Music? Use the official support contact provided with your release or inside the app.</p><h2>What to include</h2><ul><li>Astra Music version</li><li>Android version and device model</li><li>A short description and steps to reproduce the issue</li></ul><p>Never include passwords, authentication codes or payment information in a support message.</p></LegalPage>}
