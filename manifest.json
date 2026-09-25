@@ -1,9 +1,0 @@
-{
-  "name": "Astra Music",
-  "short_name": "Astra",
-  "start_url": "./",
-  "display": "standalone",
-  "background_color": "#15131a",
-  "theme_color": "#15131a",
-  "icons": [{"src":"assets/astra-icon.png","sizes":"512x512","type":"image/png"}]
-}
