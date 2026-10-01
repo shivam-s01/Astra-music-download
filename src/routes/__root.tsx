@@ -6,8 +6,12 @@ import {
   useRouter,
   HeadContent,
   Scripts,
+  useRouterState,
+  type ErrorComponentProps,
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
+import { useServerFn } from "@tanstack/react-start";
+import { recordVisit } from "../lib/visits.functions";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
@@ -34,7 +38,7 @@ function NotFoundComponent() {
   );
 }
 
-function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
+function ErrorComponent({ error, reset }: ErrorComponentProps) {
   console.error(error);
   const router = useRouter();
   useEffect(() => {
@@ -116,11 +120,34 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
+function VisitTracker() {
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const record = useServerFn(recordVisit);
+  useEffect(() => {
+    if (pathname.startsWith("/admin")) return;
+    try {
+      let id = localStorage.getItem("astra_vid");
+      if (!id) {
+        id = crypto.randomUUID();
+        localStorage.setItem("astra_vid", id);
+      }
+      const key = `astra_seen_${pathname}`;
+      if (sessionStorage.getItem(key)) return;
+      sessionStorage.setItem(key, "1");
+      record({ data: { visitorId: id, path: pathname } }).catch(() => {});
+    } catch {
+      /* storage blocked — skip */
+    }
+  }, [pathname, record]);
+  return null;
+}
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
   return (
     <QueryClientProvider client={queryClient}>
+      <VisitTracker />
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
     </QueryClientProvider>

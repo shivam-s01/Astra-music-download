@@ -1,6 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { ArrowLeft, Coffee, Download, Headphones, Library, Search, ShieldCheck, Sparkles } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
+import { listComments, submitComment } from "@/lib/comments.functions";
+import { ArrowLeft, Check, Coffee, Copy, MessageCircle, Download, Headphones, Library, Search, ShieldCheck, Sparkles } from "lucide-react";
 import homeImage from "@/assets/astra-app-home-real.jpg";
 import libraryImage from "@/assets/astra-app-library-real.jpg";
 import exploreImage from "@/assets/astra-app-explore-real.jpg";
@@ -15,7 +17,7 @@ import liveVideo from "@/assets/astra-download-live.mp4";
 import liveVideoWebm from "@/assets/astra-download-live.webm";
 import livePoster from "@/assets/astra-download-live-poster.jpg";
 
-const DOWNLOAD_URL = "https://github.com/shivam-s01/Aurum-app/releases/latest/download/astra-music-arm64-v8a-release.apk";
+const DOWNLOAD_URL = "https://github.com/shivam-s01/Aurum-app/releases/latest/download/app-arm64-v8a-release.apk";
 
 const screenshots = [
   { src: homeImage, alt: "Astra Music home screen with quick picks and recommendations", label: "Discover" },
@@ -37,6 +39,8 @@ export const Route = createFileRoute("/")({
       { property: "og:type", content: "website" },
       { property: "og:url", content: "/" },
       { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:image", content: "https://astra.mmusic.workers.dev/astra-share-cover.jpg" },
+      { name: "twitter:image", content: "https://astra.mmusic.workers.dev/astra-share-cover.jpg" },
     ],
     links: [{ rel: "canonical", href: "/" }],
   }),
@@ -202,18 +206,20 @@ function AstraPage() {
       <section className="download-band" data-reveal>
         <div className="band-live" aria-hidden="true"><video poster={livePoster} autoPlay muted loop playsInline preload="auto"><source src={liveVideoWebm} type="video/webm" /><source src={liveVideo} type="video/mp4" /></video></div>
         <div className="download-copy"><img src="/favicon.png" alt="" /><div><span>ASTRA MUSIC FOR ANDROID</span><h2>Turn up your everyday.</h2><p>Download the latest Astra APK and start listening.</p></div></div>
-        <div className="download-side"><a className="band-download" href={DOWNLOAD_URL}><Download size={20} /> Download APK</a><span><ShieldCheck size={14} /> Latest release via GitHub</span></div>
+        <div className="download-side"><a className="band-download" href={DOWNLOAD_URL}><Download size={20} /> Download APK</a><span><ShieldCheck size={14} /> Latest official release</span></div>
       </section>
 
       <section id="faq" className="faq-section" data-reveal>
         <div><span className="section-kicker">Good to know</span><h2>Quick answers.</h2></div>
         <div className="faq-list">
           <details><summary>Is Astra Music free?<span aria-hidden="true">+</span></summary><p>Yes. Astra Music is free to download and use.</p></details>
-          <details><summary>Where do I get the APK?<span aria-hidden="true">+</span></summary><p>Use any Download APK button on this page to get the latest Android release directly from GitHub.</p></details>
+          <details><summary>Where do I get the APK?<span aria-hidden="true">+</span></summary><p>Use any Download APK button on this page to get the latest official Android release.</p></details>
           <details><summary>Does Astra need an account?<span aria-hidden="true">+</span></summary><p>Account requirements depend on the services and features available in the current build.</p></details>
           <details><summary>Which Android versions are supported?<span aria-hidden="true">+</span></summary><p>Check the latest release information before installing to confirm compatibility with your device.</p></details>
         </div>
       </section>
+
+      <CommunitySection />
 
       <footer className="site-footer">
         <div className="footer-brand"><img src="/favicon.png" alt="" /><div><strong>Astra Music</strong><span>Music feels better here.</span></div></div>
@@ -266,12 +272,22 @@ function CoffeeLoading({ onComplete }: { onComplete: () => void }) {
   );
 }
 
+const UPI_ID = "64707172@nyes";
+const upiLink = (amount: number) => `upi://pay?pa=${UPI_ID}&pn=${encodeURIComponent("Astra Music")}&am=${amount}&cu=INR&tn=${encodeURIComponent("Support Astra Music")}`;
+
 function SupportPage({ onBack }: { onBack: () => void }) {
+  const [amount, setAmount] = useState(299);
+  const [custom, setCustom] = useState("");
+  const [copied, setCopied] = useState(false);
+  const customValue = Number(custom);
+  const customValid = custom === "" || (Number.isFinite(customValue) && customValue >= 10 && customValue <= 100000);
+  const finalAmount = custom && customValid ? Math.round(customValue) : amount;
+  const copy = async () => { try { await navigator.clipboard.writeText(UPI_ID); setCopied(true); window.setTimeout(() => setCopied(false), 1800); } catch { /* ignore */ } };
   return (
     <main className="support-page">
       <header className="support-header">
         <button type="button" className="support-back" onClick={onBack} aria-label="Back to Astra"><ArrowLeft size={20} /></button>
-        <div className="support-identity"><img src="/favicon.png" alt="" /><div><span>ASTRA CREATOR</span><strong>@ishivam</strong></div></div>
+        <div className="support-identity"><img src="/favicon.png" alt="" /><div><span>ASTRA CREATOR</span><strong>Shivam</strong></div></div>
         <span className="support-brand">ASTRA MUSIC</span>
       </header>
       <section className="support-intro">
@@ -279,17 +295,64 @@ function SupportPage({ onBack }: { onBack: () => void }) {
         <h1>Support the future<br />of <em>Astra.</em></h1>
         <p>Help Shivam continue building a focused, independent music experience with care and consistency.</p>
       </section>
-      <section className="support-shell" aria-label="Developer support options">
-        <div className="support-shell-head"><div><span>CONTRIBUTION</span><h2>Support development</h2></div><Coffee size={28} /></div>
-        <div className="support-options">
-          <article><strong>UPI Support</strong><span>Verified payment details will be added here when available.</span><small>COMING SOON</small></article>
-          <article><strong>International Support</strong><span>A verified international option will be added here when available.</span><small>COMING SOON</small></article>
-          <a href="https://github.com/shivam-s01/Aurum-app/issues" target="_blank" rel="noreferrer"><strong>Community / Feedback</strong><span>Share a bug or feature request on the official project.</span><small>OPEN GITHUB ISSUES ↗</small></a>
+      <section className="support-shell" aria-label="UPI support">
+        <div className="support-shell-head"><div><span>UPI · INDIA</span><h2>Choose an amount</h2></div><Coffee size={28} /></div>
+        <div className="upi-tiers" role="radiogroup" aria-label="Support amount">
+          {[99, 299, 999].map((v) => (
+            <button key={v} type="button" role="radio" aria-checked={!custom && amount === v} className={!custom && amount === v ? "is-active" : ""} onClick={() => { setAmount(v); setCustom(""); }}>₹{v}</button>
+          ))}
         </div>
-        <a className="coming-button" href="https://github.com/shivam-s01" target="_blank" rel="noreferrer">SUPPORT SHIVAM ON GITHUB</a>
+        <label className="upi-custom"><span>Custom amount (₹10 – ₹1,00,000)</span>
+          <input inputMode="numeric" placeholder="e.g. 500" value={custom} onChange={(e) => setCustom(e.target.value.replace(/[^0-9]/g, "").slice(0, 6))} aria-invalid={!customValid} />
+        </label>
+        {!customValid && <p className="upi-error">Please enter an amount between ₹10 and ₹1,00,000.</p>}
+        <a className="coming-button upi-pay" href={customValid ? upiLink(finalAmount) : undefined} aria-disabled={!customValid}>PAY ₹{finalAmount} WITH UPI APP</a>
+        <div className="upi-id-row"><div><span>UPI ID</span><strong>{UPI_ID}</strong></div><button type="button" onClick={copy}>{copied ? <><Check size={15} /> Copied</> : <><Copy size={15} /> Copy</>}</button></div>
+        <p className="upi-note">Opens Google Pay, PhonePe, Paytm or any UPI app on your phone. On desktop, copy the UPI ID and pay from your phone.</p>
       </section>
       <footer className="support-footer"><span>Built with care by Shivam</span><strong>ASTRA MUSIC</strong></footer>
     </main>
+  );
+}
+
+type Comment = { id: string; message: string; created_at: string };
+
+function CommunitySection() {
+  const fetchComments = useServerFn(listComments);
+  const send = useServerFn(submitComment);
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [text, setText] = useState("");
+  const [state, setState] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const [error, setError] = useState("");
+  useEffect(() => { fetchComments().then((r) => setComments(r.comments)).catch(() => {}); }, [fetchComments]);
+  const onSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const msg = text.trim();
+    if (msg.length < 3) { setState("error"); setError("Please write at least 3 characters."); return; }
+    setState("sending");
+    try {
+      const r = await send({ data: { message: msg } });
+      if (r.ok) { setState("sent"); setText(""); } else { setState("error"); setError(r.error ?? "Something went wrong."); }
+    } catch { setState("error"); setError("Could not send right now. Please try again."); }
+  };
+  return (
+    <section id="community" className="community-section" data-reveal>
+      <div><span className="section-kicker">Community</span><h2>Say something.</h2><p>Share feedback, a feature idea or just what you love. No name or account needed — messages appear after a quick review.</p></div>
+      <div className="community-body">
+        <form className="comment-form" onSubmit={onSubmit}>
+          <label htmlFor="comment-text" className="sr-only">Your message</label>
+          <textarea id="comment-text" maxLength={400} rows={4} placeholder="Write your message…" value={text} onChange={(e) => { setText(e.target.value); if (state !== "sending") setState("idle"); }} />
+          <div className="comment-actions"><small>{text.length}/400</small><button type="submit" disabled={state === "sending"}><MessageCircle size={16} /> {state === "sending" ? "Sending…" : "Post"}</button></div>
+          {state === "sent" && <p className="comment-status ok" role="status">Thank you! Your message will appear after review.</p>}
+          {state === "error" && <p className="comment-status err" role="alert">{error}</p>}
+        </form>
+        <ul className="comment-list">
+          {comments.length === 0 ? <li className="comment-empty">Be the first to share your thoughts.</li> : comments.map((c) => (
+            <li key={c.id}><div className="comment-meta"><strong>Astra listener</strong><time dateTime={c.created_at}>{new Date(c.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</time></div><p>{c.message}</p></li>
+          ))}
+        </ul>
+      </div>
+    </section>
   );
 }
 
