@@ -348,3 +348,11 @@ button, a, summary { -webkit-tap-highlight-color: transparent; }
 @media (prefers-reduced-motion: reduce) { .px, .lid, .cat-body, .catch-heart, .catch-burst i, .drift-heart, .coffee-note, .support-orb, .support-orb::before, .note-caret { animation: none !important; } .cat-walker, .cat-flip, .coffee-charm.is-visible .coffee-note, .coffee-charm.is-visible .support-orb { transition: none; } }
 
 .coffee-note .note-ghost, .coffee-note .note-typed { margin: 0; color: inherit; font: inherit; letter-spacing: inherit; }
+
+/* Support page — clean profile intro */
+.support-header { grid-template-columns: 1fr; min-height: 72px; border-bottom: 0; }
+.support-profile { padding: 14px 0 44px; }
+.support-avatar { display: block; width: 112px; height: 112px; margin: 0 auto 22px; border-radius: 50%; object-fit: cover; border: 3px solid color-mix(in oklab, var(--primary-foreground) 22%, transparent); box-shadow: 0 0 0 6px color-mix(in oklab, var(--primary-foreground) 6%, transparent), 0 18px 40px rgb(0 0 0 / .35); }
+.support-profile h1 { margin: 0 0 12px; font: 650 clamp(30px, 5vw, 42px)/1.15 var(--font-body); letter-spacing: -.02em; }
+.support-profile p { max-width: 440px; margin: 0 auto; color: color-mix(in oklab, var(--primary-foreground) 68%, transparent); font-size: 16px; line-height: 1.65; }
+@media (max-width: 560px) { .support-profile { padding: 6px 0 34px; } .support-avatar { width: 100px; height: 100px; margin-bottom: 18px; } .support-profile h1 { font-size: 30px; } .support-profile p { font-size: 15px; max-width: 320px; } }

@@ -371,13 +371,11 @@ function SupportPage({ onBack }: { onBack: () => void }) {
     <main className="support-page">
       <header className="support-header">
         <button type="button" className="support-back" onClick={onBack} aria-label="Back to Astra"><ArrowLeft size={20} /></button>
-        <div className="support-identity"><img src="/favicon.png" alt="" /><div><span>ASTRA CREATOR</span><strong>Shivam</strong></div></div>
-        <span className="support-brand">ASTRA MUSIC</span>
       </header>
-      <section className="support-intro">
-        <span className="support-kicker">INDEPENDENT DEVELOPMENT</span>
-        <h1>Support the future<br />of <em>Astra.</em></h1>
-        <p>Help Shivam continue building a focused, independent music experience with care and consistency.</p>
+      <section className="support-intro support-profile">
+        <img className="support-avatar" src="/astra-dev.jpg" alt="Shivam" width={112} height={112} />
+        <h1>Hi, I’m Shivam</h1>
+        <p>Thanks for stopping by. Every coffee, sponsorship, or share keeps the projects going.</p>
       </section>
       <section className="support-shell" aria-label="UPI support">
         <div className="support-shell-head"><div><span>UPI · INDIA</span><h2>Choose an amount</h2></div><Coffee size={28} /></div>
