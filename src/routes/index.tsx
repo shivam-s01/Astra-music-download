@@ -20,7 +20,8 @@ import livePoster from "@/assets/astra-download-live-poster.jpg";
 const BASE_DOWNLOADS = 20000;
 const BASE_RATINGS = 14500;
 const BASE_AVG = 4.9;
-const DOWNLOAD_URL = "https://github.com/shivam-s01/Aurum-app/releases/latest/download/astra-music-arm64-v8a-release.apk";
+const SUPPORT_NOTE = "Hi! If you love Astra Music, consider supporting my work! ☕";
+const DOWNLOAD_URL = "https://github.com/shivam-s01/Aurum-app/releases/latest/download/app-arm64-v8a-release.apk";
 
 const screenshots = [
   { src: homeImage, alt: "Astra Music home screen with quick picks and recommendations", label: "Discover" },
@@ -35,17 +36,24 @@ const screenshots = [
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Astra Music — Your music, your way" },
-      { name: "description", content: "Download Astra Music for Android — a beautiful, focused player for discovery, playback and your personal library." },
-      { property: "og:title", content: "Astra Music — Your music, your way" },
-      { property: "og:description", content: "A beautiful, focused music player built for Android." },
+      { title: "Astra Music Download — Free Android Music Player APK" },
+      { name: "description", content: "Download Astra Music for Android — free music player app. Get the latest official Astra Music APK, discover songs and build your library. Safe direct download." },
+      { name: "keywords", content: "Astra Music, Astra Music download, Astra Music APK, Astra Music app, Astra Music Android, free music player APK" },
+      { name: "robots", content: "index, follow, max-image-preview:large" },
+      { name: "theme-color", content: "#0b0b10" },
+      { property: "og:site_name", content: "Astra Music" },
+      { property: "og:title", content: "Astra Music Download — Free Android Music Player APK" },
+      { property: "og:description", content: "Download the latest official Astra Music APK for Android." },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "/" },
+      { property: "og:url", content: "https://astra.mmusic.workers.dev/" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Astra Music Download — Free Android Music Player APK" },
+      { name: "twitter:description", content: "Download the latest official Astra Music APK for Android." },
       { property: "og:image", content: "https://astra.mmusic.workers.dev/astra-share-cover.jpg" },
       { name: "twitter:image", content: "https://astra.mmusic.workers.dev/astra-share-cover.jpg" },
     ],
-    links: [{ rel: "canonical", href: "/" }],
+    links: [{ rel: "canonical", href: "https://astra.mmusic.workers.dev/" }],
+    scripts: [{ type: "application/ld+json", children: JSON.stringify([{"@context": "https://schema.org", "@type": "WebSite", "name": "Astra Music", "alternateName": ["Astra Music Download", "Astra Music APK"], "url": "https://astra.mmusic.workers.dev/"}, {"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "Astra Music", "operatingSystem": "Android", "applicationCategory": "MusicApplication", "description": "Download Astra Music for Android — a free, focused music player for discovery, playback and your personal library.", "url": "https://astra.mmusic.workers.dev/", "downloadUrl": "https://github.com/shivam-s01/Aurum-app/releases/latest/download/astra-music-arm64-v8a-release.apk", "image": "https://astra.mmusic.workers.dev/astra-share-cover.jpg", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}, {"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What is Astra Music?", "acceptedAnswer": {"@type": "Answer", "text": "Astra Music is a free Android music player app for discovering songs, playing music and building your personal library."}}, {"@type": "Question", "name": "How do I download Astra Music APK?", "acceptedAnswer": {"@type": "Answer", "text": "Tap any Download APK button on this page. The latest official Astra Music APK for Android (arm64-v8a) downloads directly from the official GitHub release."}}, {"@type": "Question", "name": "Is Astra Music free?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Astra Music is free to download and use."}}, {"@type": "Question", "name": "Does Astra need an account?", "acceptedAnswer": {"@type": "Answer", "text": "Account requirements depend on the services and features available in the current build."}}, {"@type": "Question", "name": "Which Android versions are supported?", "acceptedAnswer": {"@type": "Answer", "text": "Check the latest release information before installing to confirm compatibility with your device."}}]}]) }],
   }),
   component: AstraPage,
 });
@@ -81,7 +89,7 @@ function AstraPage() {
     } catch { /* storage blocked — skip */ }
   };
   const [meowing, setMeowing] = useState(false);
-  const [catMode, setCatMode] = useState<"watch" | "stalk" | "crouch" | "pounce" | "dribble" | "paw" | "look" | "sleep" | "wake">("watch");
+  const [catMode, setCatMode] = useState<"watch" | "stalk" | "crouch" | "pounce" | "dribble" | "paw" | "look" | "sleep" | "wake" | "groove">("watch");
 
   useEffect(() => {
     const updateCoffee = () => {
@@ -106,6 +114,7 @@ function AstraPage() {
       { mode: "pounce", duration: 1250 },
       { mode: "dribble", duration: 2400 },
       { mode: "paw", duration: 1900 },
+      { mode: "groove", duration: 2600 },
       { mode: "watch", duration: 2800 },
       { mode: "sleep", duration: 6800 },
       { mode: "wake", duration: 800 },
@@ -120,6 +129,22 @@ function AstraPage() {
       timer = window.setTimeout(advance, moment.duration + Math.round(Math.random() * 650));
     };
     advance();
+    return () => window.clearTimeout(timer);
+  }, [coffeeVisible]);
+
+  const [typed, setTyped] = useState("");
+  useEffect(() => {
+    const chars = Array.from(SUPPORT_NOTE);
+    if (!coffeeVisible) { setTyped(""); return; }
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) { setTyped(SUPPORT_NOTE); return; }
+    let i = 0;
+    let timer = 0;
+    const tick = () => {
+      i += 1;
+      setTyped(chars.slice(0, i).join(""));
+      if (i < chars.length) timer = window.setTimeout(tick, /[,!]/.test(chars[i - 1]) ? 240 : 46 + Math.round(Math.random() * 26));
+    };
+    timer = window.setTimeout(tick, 700);
     return () => window.clearTimeout(timer);
   }, [coffeeVisible]);
 
@@ -244,8 +269,9 @@ function AstraPage() {
       <section id="faq" className="faq-section" data-reveal>
         <div><span className="section-kicker">Good to know</span><h2>Quick answers.</h2></div>
         <div className="faq-list">
+          <details><summary>What is Astra Music?<span aria-hidden="true">+</span></summary><p>Astra Music is a free Android music player app for discovering songs, playing music and building your personal library.</p></details>
+          <details><summary>How do I download Astra Music APK?<span aria-hidden="true">+</span></summary><p>Tap any Download APK button on this page. The latest official Astra Music APK for Android (arm64-v8a) downloads directly from the official GitHub release.</p></details>
           <details><summary>Is Astra Music free?<span aria-hidden="true">+</span></summary><p>Yes. Astra Music is free to download and use.</p></details>
-          <details><summary>Where do I get the APK?<span aria-hidden="true">+</span></summary><p>Use any Download APK button on this page to get the latest official Android release.</p></details>
           <details><summary>Does Astra need an account?<span aria-hidden="true">+</span></summary><p>Account requirements depend on the services and features available in the current build.</p></details>
           <details><summary>Which Android versions are supported?<span aria-hidden="true">+</span></summary><p>Check the latest release information before installing to confirm compatibility with your device.</p></details>
         </div>
@@ -268,8 +294,15 @@ function AstraPage() {
             <span className="sleep-mark sleep-mark-two">z</span>
           </span>
         </button>
-        <button type="button" className="coffee-note" onClick={() => setSupportView("loading")} aria-label="Support the developer">
-          <span>Hi! If you love Astra Music, consider supporting my work! ☕</span>
+        <button type="button" className="coffee-note" onClick={() => setSupportView("loading")} aria-label={SUPPORT_NOTE}>
+          <span className="note-ghost" aria-hidden="true">{SUPPORT_NOTE}</span>
+          <span className="note-typed" aria-hidden="true">{typed}<i className={`note-caret ${typed.length >= Array.from(SUPPORT_NOTE).length ? "done" : ""}`} /></span>
+        </button>
+        <button type="button" className="support-orb" onClick={() => setSupportView("loading")} aria-label="Support the developer with a coffee">
+          <img src="/astra-dev.jpg" alt="" width={256} height={256} loading="lazy" />
+          <span className="orb-badge" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="15" height="15"><path className="steam-a" d="M8 6c-1-1.2 1-2 0-3.4M12 6c-1-1.2 1-2 0-3.4" /><path d="M5 9h11v5.2A4.8 4.8 0 0 1 11.2 19H9.8A4.8 4.8 0 0 1 5 14.200Z" className="cup" /><path d="M16 10.2h1.300a2.300 2.300 0 0 1 0 4.600H15.800" className="cup-handle" /><path d="M4 21h14" className="cup-handle" /></svg>
+          </span>
         </button>
       </aside>
     </main>
