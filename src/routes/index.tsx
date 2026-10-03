@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { listComments, submitComment } from "@/lib/comments.functions";
-import { getPublicStats, recordDownload } from "@/lib/stats.functions";
+import { getPublicStats } from "@/lib/stats.functions";
 import { ArrowLeft, Check, Coffee, Copy, MessageCircle, Star, Download, Headphones, Library, Search, ShieldCheck, Sparkles } from "lucide-react";
 import homeImage from "@/assets/astra-app-home-real.jpg";
 import libraryImage from "@/assets/astra-app-library-real.jpg";
@@ -56,9 +56,15 @@ function AstraPage() {
   const [supportView, setSupportView] = useState<"site" | "loading" | "support">("site");
   const [coffeeVisible, setCoffeeVisible] = useState(false);
   const fetchStats = useServerFn(getPublicStats);
-  const trackDl = useServerFn(recordDownload);
   const [live, setLive] = useState({ downloads: 0, ratingCount: 0, ratingSum: 0 });
-  useEffect(() => { fetchStats().then(setLive).catch(() => {}); }, [fetchStats]);
+  useEffect(() => {
+    let alive = true;
+    const load = () => { if (document.visibilityState === "visible") fetchStats().then((s) => { if (alive) setLive(s); }).catch(() => {}); };
+    load();
+    const t = window.setInterval(load, 30000);
+    document.addEventListener("visibilitychange", load);
+    return () => { alive = false; window.clearInterval(t); document.removeEventListener("visibilitychange", load); };
+  }, [fetchStats]);
   const totalDownloads = BASE_DOWNLOADS + live.downloads;
   const totalRatings = BASE_RATINGS + live.ratingCount;
   const avgRating = ((BASE_RATINGS * BASE_AVG + live.ratingSum) / totalRatings).toFixed(1);
@@ -66,7 +72,14 @@ function AstraPage() {
     try {
       let id = localStorage.getItem("astra_vid");
       if (!id) { id = crypto.randomUUID(); localStorage.setItem("astra_vid", id); }
-      trackDl({ data: { visitorId: id } }).catch(() => {});
+      const last = Number(localStorage.getItem("astra_last_dl") || 0);
+      if (Date.now() - last < 10 * 60 * 1000) return; // already counted recently
+      localStorage.setItem("astra_last_dl", String(Date.now()));
+      setLive((s) => ({ ...s, downloads: s.downloads + 1 })); // show +1 instantly
+      const body = JSON.stringify({ visitorId: id });
+      // sendBeacon survives the page starting the APK download / navigating away
+      const sent = typeof navigator.sendBeacon === "function" && navigator.sendBeacon("/api/public/track-download", new Blob([body], { type: "text/plain" }));
+      if (!sent) fetch("/api/public/track-download", { method: "POST", body, keepalive: true }).catch(() => {});
     } catch { /* storage blocked — skip */ }
   };
   const [meowing, setMeowing] = useState(false);

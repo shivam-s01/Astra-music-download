@@ -8,6 +8,20 @@
       "when": 1790886559262,
       "tag": "0000_astra_comments_admin_visits",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1790986559262,
+      "tag": "0001_astra_comments_rating",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1790990159262,
+      "tag": "0002_astra_downloads_public_stats",
+      "breakpoints": true
     }
   ]
 }
