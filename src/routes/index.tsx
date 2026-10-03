@@ -297,16 +297,23 @@ function AstraPage() {
 
       <aside className={`coffee-charm ${coffeeVisible ? "is-visible" : ""}`} aria-hidden={!coffeeVisible} inert={!coffeeVisible ? true : undefined}>
         <div className="cat-stage" style={{ "--k": catPos, "--f": catFace, "--walk": `${walkMs}ms` } as React.CSSProperties} aria-hidden="true">
-          <span className="drift-heart d1"><Heart /></span><span className="drift-heart d2"><Heart /></span><span className="drift-heart d3"><Heart /></span><span className="drift-heart d4"><Heart /></span><span className="drift-heart d5"><Heart /></span>
+          <span className="drift-heart d1"><Heart /></span><span className="drift-heart d2"><Heart /></span><span className="drift-heart d3"><Heart /></span><span className="drift-heart d4"><Heart /></span>
           <button type="button" className={`cat-walker cat-${catMode} ${meowing ? "is-meowing" : ""}`} onClick={playMeow} tabIndex={-1}>
             <span className={`meow-bubble ${meowing ? "show" : ""}`}>meow!</span>
             <span className="catch-heart"><Heart /></span>
             <span className="catch-burst"><i><Heart /></i><i><Heart /></i><i><Heart /></i><i><Heart /></i></span>
-            <span className="cat-body"><span className="cat-flip"><img src="/astra-cat-white.png" alt="" width={99} height={118} draggable={false} /></span></span>
+            <span className="cat-body"><span className="cat-flip">
+              <span className="px px-tail"><img src="/astra-cat-tail.png" alt="" draggable={false} /></span>
+              <span className="px px-torso">
+                <img className="px-body" src="/astra-cat-body.png" alt="" draggable={false} />
+                <span className="px px-head"><img src="/astra-cat-head.png" alt="" draggable={false} /><i className="lid lid-l" /><i className="lid lid-r" /><i className="mouth-o" /></span>
+              </span>
+            </span></span>
             <span className="sleep-mark sleep-mark-one">z</span>
             <span className="sleep-mark sleep-mark-two">z</span>
           </button>
         </div>
+        <div className="note-wrap">
         <button type="button" className="coffee-note" onClick={() => setSupportView("loading")} aria-label={SUPPORT_NOTE}>
           <span className="note-ghost" aria-hidden="true">{SUPPORT_NOTE}</span>
           <span className="note-typed" aria-hidden="true">{typed}<i className={`note-caret ${typed.length >= Array.from(SUPPORT_NOTE).length ? "done" : ""}`} /></span>
@@ -317,6 +324,7 @@ function AstraPage() {
             <svg viewBox="0 0 24 24" width="15" height="15"><path className="steam-a" d="M8 6c-1-1.2 1-2 0-3.4M12 6c-1-1.2 1-2 0-3.4" /><path d="M5 9h11v5.2A4.8 4.8 0 0 1 11.2 19H9.8A4.8 4.8 0 0 1 5 14.2Z" className="cup" /><path d="M16 10.2h1.300a2.300 2.300 0 0 1 0 4.600H15.800" className="cup-handle" /><path d="M4 21h14" className="cup-handle" /></svg>
           </span>
         </button>
+        </div>
       </aside>
     </main>
   );
