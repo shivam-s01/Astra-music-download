@@ -11,9 +11,7 @@ import suggestionsImage from "@/assets/astra-app-suggestions-real.jpg";
 import resultsImage from "@/assets/astra-app-results-real.jpg";
 import playerImage from "@/assets/astra-app-player-real.jpg";
 import lyricsImage from "@/assets/astra-app-lyrics-real.jpg";
-import catPlayImage from "@/assets/astra-cat-play.png";
-import catSleepImage from "@/assets/astra-cat-sleep.png";
-import coffeeImage from "@/assets/astra-coffee.png";
+import { AstraCat } from "@/components/AstraCat";
 import liveVideo from "@/assets/astra-download-live.mp4";
 import liveVideoWebm from "@/assets/astra-download-live.webm";
 import livePoster from "@/assets/astra-download-live-poster.jpg";
@@ -83,7 +81,7 @@ function AstraPage() {
     } catch { /* storage blocked — skip */ }
   };
   const [meowing, setMeowing] = useState(false);
-  const [catMode, setCatMode] = useState<"watch" | "stalk" | "crouch" | "pounce" | "dribble" | "paw" | "look" | "sleep">("watch");
+  const [catMode, setCatMode] = useState<"watch" | "stalk" | "crouch" | "pounce" | "dribble" | "paw" | "look" | "sleep" | "wake">("watch");
 
   useEffect(() => {
     const updateCoffee = () => {
@@ -110,6 +108,7 @@ function AstraPage() {
       { mode: "paw", duration: 1900 },
       { mode: "watch", duration: 2800 },
       { mode: "sleep", duration: 6800 },
+      { mode: "wake", duration: 800 },
     ];
     let index = 0;
     let timer = 0;
@@ -147,9 +146,10 @@ function AstraPage() {
 
   const playMeow = () => {
     setMeowing(true);
-    setCatMode("pounce");
-    window.setTimeout(() => setMeowing(false), 1100);
-    window.setTimeout(() => setCatMode("watch"), 1050);
+    setCatMode("crouch");
+    window.setTimeout(() => setCatMode("pounce"), 420);
+    window.setTimeout(() => setMeowing(false), 1500);
+    window.setTimeout(() => setCatMode("watch"), 1800);
     playSyntheticMeow();
   };
 
@@ -262,17 +262,15 @@ function AstraPage() {
       <aside className={`coffee-charm ${coffeeVisible ? "is-visible" : ""}`} aria-hidden={!coffeeVisible} inert={!coffeeVisible ? true : undefined}>
         <button className="cat-stage" type="button" onClick={playMeow} aria-label="Play with Astra cat">
           <span className={`meow-bubble ${meowing ? "show" : ""}`}>meow</span>
-          <span className={`real-cat cat-${catMode}`} aria-hidden="true">
-            <img className="cat-playing" src={catPlayImage} alt="" loading="lazy" width={1024} height={1024} />
-            <img className="cat-sleeping" src={catSleepImage} alt="" loading="lazy" width={1024} height={1024} />
+          <span className={`real-cat cat-${catMode} ${meowing ? "is-meowing" : ""}`} aria-hidden="true">
+            <AstraCat />
             <span className="sleep-mark sleep-mark-one">z</span>
             <span className="sleep-mark sleep-mark-two">z</span>
           </span>
         </button>
-        <div className="coffee-note">
-          <div><strong>If you love Astra,</strong><span>please support the developer.</span></div>
-          <button type="button" className="coffee-button" onClick={() => setSupportView("loading")} aria-label="Support the developer with coffee"><img src={coffeeImage} alt="" loading="lazy" width={1024} height={1024} /></button>
-        </div>
+        <button type="button" className="coffee-note" onClick={() => setSupportView("loading")} aria-label="Support the developer">
+          <span>Hi! If you love Astra Music, consider supporting my work! ☕</span>
+        </button>
       </aside>
     </main>
   );
