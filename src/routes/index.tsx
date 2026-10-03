@@ -20,7 +20,7 @@ import livePoster from "@/assets/astra-download-live-poster.jpg";
 const BASE_DOWNLOADS = 20000;
 const BASE_RATINGS = 14500;
 const BASE_AVG = 4.9;
-const DOWNLOAD_URL = "https://github.com/shivam-s01/Aurum-app/releases/latest/download/app-arm64-v8a-release.apk";
+const DOWNLOAD_URL = "https://github.com/shivam-s01/Aurum-app/releases/latest/download/astra-music-arm64-v8a-release.apk";
 
 const screenshots = [
   { src: homeImage, alt: "Astra Music home screen with quick picks and recommendations", label: "Discover" },
