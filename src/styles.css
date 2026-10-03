@@ -264,3 +264,20 @@ button, a, summary { -webkit-tap-highlight-color: transparent; }
 .admin-row time { font-size: .8rem; color: var(--muted-foreground); }
 .admin-actions { display: flex; gap: 6px; flex-wrap: wrap; }
 @media (max-width: 480px) { .admin-stat strong { font-size: 1.3rem; } }
+
+.star-input { display: flex; align-items: center; gap: 4px; padding-bottom: 10px; margin-bottom: 8px; border-bottom: 1px solid var(--border); }
+.star-input button { display: inline-grid; place-items: center; width: 40px; height: 40px; background: transparent; color: var(--muted-foreground); }
+.star-input button.on { color: #f5a623; }
+.star-input button.on svg { fill: currentColor; }
+.star-input small { margin-left: auto; color: var(--muted-foreground); font-size: 12px; }
+.comment-stars { color: #f5a623; letter-spacing: 1px; margin-left: 8px; margin-right: auto; }
+.admin-ratings { margin-bottom: 20px; display: grid; gap: 8px; }
+.admin-rating-head { display: flex; align-items: baseline; gap: 10px; }
+.admin-rating-head strong { font-size: 2rem; }
+.admin-rating-head span { color: var(--muted-foreground); font-size: .85rem; }
+.admin-bar { display: grid; grid-template-columns: 28px 1fr 32px; gap: 8px; align-items: center; font-size: .85rem; }
+.admin-bar div { height: 8px; border-radius: 999px; background: color-mix(in oklab, var(--foreground) 10%, transparent); overflow: hidden; }
+.admin-bar i { display: block; height: 100%; background: #f5a623; border-radius: 999px; }
+.admin-bar em { font-style: normal; text-align: right; color: var(--muted-foreground); }
+.admin-stars { margin: 0 0 6px; color: #f5a623; letter-spacing: 1px; }
+

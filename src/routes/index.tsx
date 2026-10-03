@@ -2,7 +2,8 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { listComments, submitComment } from "@/lib/comments.functions";
-import { ArrowLeft, Check, Coffee, Copy, MessageCircle, Download, Headphones, Library, Search, ShieldCheck, Sparkles } from "lucide-react";
+import { getPublicStats, recordDownload } from "@/lib/stats.functions";
+import { ArrowLeft, Check, Coffee, Copy, MessageCircle, Star, Download, Headphones, Library, Search, ShieldCheck, Sparkles } from "lucide-react";
 import homeImage from "@/assets/astra-app-home-real.jpg";
 import libraryImage from "@/assets/astra-app-library-real.jpg";
 import exploreImage from "@/assets/astra-app-explore-real.jpg";
@@ -17,6 +18,10 @@ import liveVideo from "@/assets/astra-download-live.mp4";
 import liveVideoWebm from "@/assets/astra-download-live.webm";
 import livePoster from "@/assets/astra-download-live-poster.jpg";
 
+// Starting numbers; real downloads/ratings from this site are added on top.
+const BASE_DOWNLOADS = 20000;
+const BASE_RATINGS = 14500;
+const BASE_AVG = 4.9;
 const DOWNLOAD_URL = "https://github.com/shivam-s01/Aurum-app/releases/latest/download/app-arm64-v8a-release.apk";
 
 const screenshots = [
@@ -50,6 +55,20 @@ export const Route = createFileRoute("/")({
 function AstraPage() {
   const [supportView, setSupportView] = useState<"site" | "loading" | "support">("site");
   const [coffeeVisible, setCoffeeVisible] = useState(false);
+  const fetchStats = useServerFn(getPublicStats);
+  const trackDl = useServerFn(recordDownload);
+  const [live, setLive] = useState({ downloads: 0, ratingCount: 0, ratingSum: 0 });
+  useEffect(() => { fetchStats().then(setLive).catch(() => {}); }, [fetchStats]);
+  const totalDownloads = BASE_DOWNLOADS + live.downloads;
+  const totalRatings = BASE_RATINGS + live.ratingCount;
+  const avgRating = ((BASE_RATINGS * BASE_AVG + live.ratingSum) / totalRatings).toFixed(1);
+  const trackDownload = () => {
+    try {
+      let id = localStorage.getItem("astra_vid");
+      if (!id) { id = crypto.randomUUID(); localStorage.setItem("astra_vid", id); }
+      trackDl({ data: { visitorId: id } }).catch(() => {});
+    } catch { /* storage blocked — skip */ }
+  };
   const [meowing, setMeowing] = useState(false);
   const [catMode, setCatMode] = useState<"watch" | "stalk" | "crouch" | "pounce" | "dribble" | "paw" | "look" | "sleep">("watch");
 
@@ -149,7 +168,7 @@ function AstraPage() {
         <nav className="desktop-nav" aria-label="Main navigation">
           <a href="#screens">Screens</a><a href="#features">Features</a><a href="#faq">FAQ</a>
         </nav>
-        <a className="header-download" href={DOWNLOAD_URL}><Download size={15} /> Download</a>
+        <a className="header-download" href={DOWNLOAD_URL} onClick={trackDownload}><Download size={15} /> Download</a>
       </header>
 
       <section id="top" className="hero-section is-revealed" data-reveal>
@@ -158,13 +177,13 @@ function AstraPage() {
           <h1>Your music.<br /><em>Your moment.</em></h1>
           <p>Astra brings discovery, search, playback and your library into one joyful music experience—without the clutter.</p>
           <div className="hero-actions">
-            <a className="primary-download" href={DOWNLOAD_URL}><Download size={20} /> Download APK</a>
+            <a className="primary-download" href={DOWNLOAD_URL} onClick={trackDownload}><Download size={20} /> Download APK</a>
             <a className="secondary-link" href="#screens">See it in action <span>↓</span></a>
           </div>
-          <div className="hero-stats" aria-label="Over 20,000 downloads, 14,500 plus ratings, 4.9 average rating">
-            <div><strong>20,000+</strong><span>Downloads</span></div>
-            <div><strong>14,500+</strong><span>Ratings</span></div>
-            <div><strong>4.9<span className="stat-star">★</span></strong><span>Average rating</span></div>
+          <div className="hero-stats" aria-label={`Over ${totalDownloads.toLocaleString("en-US")} downloads, ${totalRatings.toLocaleString("en-US")} plus ratings, ${avgRating} average rating`}>
+            <div><strong>{totalDownloads.toLocaleString("en-US")}+</strong><span>Downloads</span></div>
+            <div><strong>{totalRatings.toLocaleString("en-US")}+</strong><span>Ratings</span></div>
+            <div><strong>{avgRating}<span className="stat-star">★</span></strong><span>Average rating</span></div>
           </div>
         </div>
         <div className="hero-art" aria-label="Astra Music app preview">
@@ -206,7 +225,7 @@ function AstraPage() {
       <section className="download-band" data-reveal>
         <div className="band-live" aria-hidden="true"><video poster={livePoster} autoPlay muted loop playsInline preload="auto"><source src={liveVideoWebm} type="video/webm" /><source src={liveVideo} type="video/mp4" /></video></div>
         <div className="download-copy"><img src="/favicon.png" alt="" /><div><span>ASTRA MUSIC FOR ANDROID</span><h2>Turn up your everyday.</h2><p>Download the latest Astra APK and start listening.</p></div></div>
-        <div className="download-side"><a className="band-download" href={DOWNLOAD_URL}><Download size={20} /> Download APK</a><span><ShieldCheck size={14} /> Latest official release</span></div>
+        <div className="download-side"><a className="band-download" href={DOWNLOAD_URL} onClick={trackDownload}><Download size={20} /> Download APK</a><span><ShieldCheck size={14} /> Latest official release</span></div>
       </section>
 
       <section id="faq" className="faq-section" data-reveal>
@@ -315,13 +334,14 @@ function SupportPage({ onBack }: { onBack: () => void }) {
   );
 }
 
-type Comment = { id: string; message: string; created_at: string };
+type Comment = { id: string; message: string; rating: number | null; created_at: string };
 
 function CommunitySection() {
   const fetchComments = useServerFn(listComments);
   const send = useServerFn(submitComment);
   const [comments, setComments] = useState<Comment[]>([]);
   const [text, setText] = useState("");
+  const [rating, setRating] = useState(0);
   const [state, setState] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [error, setError] = useState("");
   useEffect(() => { fetchComments().then((r) => setComments(r.comments)).catch(() => {}); }, [fetchComments]);
@@ -331,8 +351,8 @@ function CommunitySection() {
     if (msg.length < 3) { setState("error"); setError("Please write at least 3 characters."); return; }
     setState("sending");
     try {
-      const r = await send({ data: { message: msg } });
-      if (r.ok) { setState("sent"); setText(""); } else { setState("error"); setError(r.error ?? "Something went wrong."); }
+      const r = await send({ data: { message: msg, ...(rating ? { rating } : {}) } });
+      if (r.ok) { setState("sent"); setText(""); setRating(0); } else { setState("error"); setError(r.error ?? "Something went wrong."); }
     } catch { setState("error"); setError("Could not send right now. Please try again."); }
   };
   return (
@@ -340,6 +360,12 @@ function CommunitySection() {
       <div><span className="section-kicker">Community</span><h2>Say something.</h2><p>Share feedback, a feature idea or just what you love. No name or account needed — messages appear after a quick review.</p></div>
       <div className="community-body">
         <form className="comment-form" onSubmit={onSubmit}>
+          <div className="star-input" role="radiogroup" aria-label="Rate Astra">
+            {[1, 2, 3, 4, 5].map((n) => (
+              <button key={n} type="button" role="radio" aria-checked={rating === n} aria-label={`${n} star${n > 1 ? "s" : ""}`} className={n <= rating ? "on" : ""} onClick={() => { setRating(rating === n ? 0 : n); if (state !== "sending") setState("idle"); }}><Star size={26} /></button>
+            ))}
+            <small>{rating ? `${rating}/5` : "Optional"}</small>
+          </div>
           <label htmlFor="comment-text" className="sr-only">Your message</label>
           <textarea id="comment-text" maxLength={400} rows={4} placeholder="Write your message…" value={text} onChange={(e) => { setText(e.target.value); if (state !== "sending") setState("idle"); }} />
           <div className="comment-actions"><small>{text.length}/400</small><button type="submit" disabled={state === "sending"}><MessageCircle size={16} /> {state === "sending" ? "Sending…" : "Post"}</button></div>
@@ -348,7 +374,7 @@ function CommunitySection() {
         </form>
         <ul className="comment-list">
           {comments.length === 0 ? <li className="comment-empty">Be the first to share your thoughts.</li> : comments.map((c) => (
-            <li key={c.id}><div className="comment-meta"><strong>Astra listener</strong><time dateTime={c.created_at}>{new Date(c.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</time></div><p>{c.message}</p></li>
+            <li key={c.id}><div className="comment-meta"><strong>Astra listener</strong>{c.rating ? <span className="comment-stars" aria-label={`${c.rating} out of 5 stars`}>{"★".repeat(c.rating)}{"☆".repeat(5 - c.rating)}</span> : null}<time dateTime={c.created_at}>{new Date(c.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</time></div><p>{c.message}</p></li>
           ))}
         </ul>
       </div>

@@ -21,23 +21,23 @@ function publicClient() {
 export const listComments = createServerFn({ method: "GET" }).handler(async () => {
   const { data, error } = await publicClient()
     .from("astra_comments")
-    .select("id, message, created_at")
+    .select("id, message, rating, created_at")
     .eq("status", "approved")
     .order("created_at", { ascending: false })
     .limit(30);
   if (error) {
     console.error(error);
-    return { comments: [] as { id: string; message: string; created_at: string }[] };
+    return { comments: [] as { id: string; message: string; rating: number | null; created_at: string }[] };
   }
   return { comments: data ?? [] };
 });
 
 export const submitComment = createServerFn({ method: "POST" })
-  .inputValidator((d) => z.object({ message: z.string().trim().min(3).max(400) }).parse(d))
+  .inputValidator((d) => z.object({ message: z.string().trim().min(3).max(400), rating: z.number().int().min(1).max(5).optional() }).parse(d))
   .handler(async ({ data }) => {
     if (/https?:\/\/|www\./i.test(data.message)) return { ok: false, error: "Links are not allowed." };
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { error } = await supabaseAdmin.from("astra_comments").insert({ message: data.message, status: "pending" });
+    const { error } = await supabaseAdmin.from("astra_comments").insert({ message: data.message, rating: data.rating ?? null, status: "pending" });
     if (error) {
       console.error(error);
       return { ok: false, error: "Could not send right now. Please try again." };

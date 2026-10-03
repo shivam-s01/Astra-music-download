@@ -19,19 +19,40 @@ export type Database = {
           created_at: string
           id: string
           message: string
+          rating: number | null
           status: string
         }
         Insert: {
           created_at?: string
           id?: string
           message: string
+          rating?: number | null
           status?: string
         }
         Update: {
           created_at?: string
           id?: string
           message?: string
+          rating?: number | null
           status?: string
+        }
+        Relationships: []
+      }
+      site_downloads: {
+        Row: {
+          created_at: string
+          id: number
+          visitor_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          visitor_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          visitor_id?: string
         }
         Relationships: []
       }
@@ -85,6 +106,14 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      public_stats: {
+        Args: never
+        Returns: {
+          downloads: number
+          rating_count: number
+          rating_sum: number
+        }[]
       }
       visit_stats: {
         Args: never
