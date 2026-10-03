@@ -11,7 +11,6 @@ import suggestionsImage from "@/assets/astra-app-suggestions-real.jpg";
 import resultsImage from "@/assets/astra-app-results-real.jpg";
 import playerImage from "@/assets/astra-app-player-real.jpg";
 import lyricsImage from "@/assets/astra-app-lyrics-real.jpg";
-import { AstraCat } from "@/components/AstraCat";
 import liveVideo from "@/assets/astra-download-live.mp4";
 import liveVideoWebm from "@/assets/astra-download-live.webm";
 import livePoster from "@/assets/astra-download-live-poster.jpg";
@@ -58,6 +57,10 @@ export const Route = createFileRoute("/")({
   component: AstraPage,
 });
 
+function Heart() {
+  return <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21.2S3.2 15.700 2.600 9.600C2.300 6.300 4.500 4 7.300 4c1.900 0 3.700 1 4.700 2.800C13 5 14.800 4 16.700 4c2.800 0 5 2.300 4.700 5.600-.6 6.100-9.400 11.600-9.400 11.600Z" /></svg>;
+}
+
 function AstraPage() {
   const [supportView, setSupportView] = useState<"site" | "loading" | "support">("site");
   const [coffeeVisible, setCoffeeVisible] = useState(false);
@@ -89,7 +92,11 @@ function AstraPage() {
     } catch { /* storage blocked — skip */ }
   };
   const [meowing, setMeowing] = useState(false);
-  const [catMode, setCatMode] = useState<"watch" | "stalk" | "crouch" | "pounce" | "dribble" | "paw" | "look" | "sleep" | "wake" | "groove">("watch");
+  type CatMode = "sit" | "walk" | "look" | "catch" | "groove" | "sleep" | "wake";
+  const [catMode, setCatMode] = useState<CatMode>("sit");
+  const [catPos, setCatPos] = useState(0.1);
+  const [catFace, setCatFace] = useState(1);
+  const [walkMs, setWalkMs] = useState(1900);
 
   useEffect(() => {
     const updateCoffee = () => {
@@ -106,27 +113,31 @@ function AstraPage() {
 
   useEffect(() => {
     if (!coffeeVisible) return;
-    const routine: Array<{ mode: typeof catMode; duration: number }> = [
-      { mode: "watch", duration: 2300 },
-      { mode: "look", duration: 1200 },
-      { mode: "stalk", duration: 1450 },
-      { mode: "crouch", duration: 650 },
-      { mode: "pounce", duration: 1250 },
-      { mode: "dribble", duration: 2400 },
-      { mode: "paw", duration: 1900 },
-      { mode: "groove", duration: 2600 },
-      { mode: "watch", duration: 2800 },
-      { mode: "sleep", duration: 6800 },
-      { mode: "wake", duration: 800 },
+    const routine: Array<{ mode: CatMode; pos: number; face: number; duration: number }> = [
+      { mode: "sit", pos: 0.1, face: 1, duration: 1800 },
+      { mode: "walk", pos: 0.86, face: 1, duration: 2000 },
+      { mode: "look", pos: 0.86, face: -1, duration: 1500 },
+      { mode: "walk", pos: 0.45, face: -1, duration: 1800 },
+      { mode: "catch", pos: 0.45, face: 1, duration: 2700 },
+      { mode: "groove", pos: 0.45, face: 1, duration: 2600 },
+      { mode: "walk", pos: 0.62, face: 1, duration: 1300 },
+      { mode: "catch", pos: 0.62, face: -1, duration: 2700 },
+      { mode: "walk", pos: 0.1, face: -1, duration: 2000 },
+      { mode: "sit", pos: 0.1, face: 1, duration: 1600 },
+      { mode: "sleep", pos: 0.1, face: 1, duration: 6500 },
+      { mode: "wake", pos: 0.1, face: 1, duration: 900 },
     ];
     let index = 0;
     let timer = 0;
     const advance = () => {
       const moment = routine[index];
       if (!moment) return;
+      setWalkMs(moment.mode === "walk" ? moment.duration - 100 : 400);
+      setCatPos(moment.pos);
+      setCatFace(moment.face);
       setCatMode(moment.mode);
       index = (index + 1) % routine.length;
-      timer = window.setTimeout(advance, moment.duration + Math.round(Math.random() * 650));
+      timer = window.setTimeout(advance, moment.duration);
     };
     advance();
     return () => window.clearTimeout(timer);
@@ -171,10 +182,9 @@ function AstraPage() {
 
   const playMeow = () => {
     setMeowing(true);
-    setCatMode("crouch");
-    window.setTimeout(() => setCatMode("pounce"), 420);
+    setWalkMs(400);
+    setCatMode("catch");
     window.setTimeout(() => setMeowing(false), 1500);
-    window.setTimeout(() => setCatMode("watch"), 1800);
     playSyntheticMeow();
   };
 
@@ -286,14 +296,17 @@ function AstraPage() {
       </footer>
 
       <aside className={`coffee-charm ${coffeeVisible ? "is-visible" : ""}`} aria-hidden={!coffeeVisible} inert={!coffeeVisible ? true : undefined}>
-        <button className="cat-stage" type="button" onClick={playMeow} aria-label="Play with Astra cat">
-          <span className={`meow-bubble ${meowing ? "show" : ""}`}>meow</span>
-          <span className={`real-cat cat-${catMode} ${meowing ? "is-meowing" : ""}`} aria-hidden="true">
-            <AstraCat />
+        <div className="cat-stage" style={{ "--k": catPos, "--f": catFace, "--walk": `${walkMs}ms` } as React.CSSProperties} aria-hidden="true">
+          <span className="drift-heart d1"><Heart /></span><span className="drift-heart d2"><Heart /></span><span className="drift-heart d3"><Heart /></span><span className="drift-heart d4"><Heart /></span><span className="drift-heart d5"><Heart /></span>
+          <button type="button" className={`cat-walker cat-${catMode} ${meowing ? "is-meowing" : ""}`} onClick={playMeow} tabIndex={-1}>
+            <span className={`meow-bubble ${meowing ? "show" : ""}`}>meow!</span>
+            <span className="catch-heart"><Heart /></span>
+            <span className="catch-burst"><i><Heart /></i><i><Heart /></i><i><Heart /></i><i><Heart /></i></span>
+            <span className="cat-body"><span className="cat-flip"><img src="/astra-cat-white.png" alt="" width={99} height={118} draggable={false} /></span></span>
             <span className="sleep-mark sleep-mark-one">z</span>
             <span className="sleep-mark sleep-mark-two">z</span>
-          </span>
-        </button>
+          </button>
+        </div>
         <button type="button" className="coffee-note" onClick={() => setSupportView("loading")} aria-label={SUPPORT_NOTE}>
           <span className="note-ghost" aria-hidden="true">{SUPPORT_NOTE}</span>
           <span className="note-typed" aria-hidden="true">{typed}<i className={`note-caret ${typed.length >= Array.from(SUPPORT_NOTE).length ? "done" : ""}`} /></span>
@@ -301,7 +314,7 @@ function AstraPage() {
         <button type="button" className="support-orb" onClick={() => setSupportView("loading")} aria-label="Support the developer with a coffee">
           <img src="/astra-dev.jpg" alt="" width={256} height={256} loading="lazy" />
           <span className="orb-badge" aria-hidden="true">
-            <svg viewBox="0 0 24 24" width="15" height="15"><path className="steam-a" d="M8 6c-1-1.2 1-2 0-3.4M12 6c-1-1.2 1-2 0-3.4" /><path d="M5 9h11v5.2A4.8 4.8 0 0 1 11.2 19H9.8A4.8 4.8 0 0 1 5 14.200Z" className="cup" /><path d="M16 10.2h1.300a2.300 2.300 0 0 1 0 4.600H15.800" className="cup-handle" /><path d="M4 21h14" className="cup-handle" /></svg>
+            <svg viewBox="0 0 24 24" width="15" height="15"><path className="steam-a" d="M8 6c-1-1.2 1-2 0-3.4M12 6c-1-1.2 1-2 0-3.4" /><path d="M5 9h11v5.2A4.8 4.8 0 0 1 11.2 19H9.8A4.8 4.8 0 0 1 5 14.2Z" className="cup" /><path d="M16 10.2h1.300a2.300 2.300 0 0 1 0 4.600H15.800" className="cup-handle" /><path d="M4 21h14" className="cup-handle" /></svg>
           </span>
         </button>
       </aside>
