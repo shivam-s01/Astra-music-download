@@ -102,9 +102,7 @@ function AstraPage() {
     const updateCoffee = () => {
       const vh = window.innerHeight;
       const faqTop = document.getElementById("faq")?.getBoundingClientRect().top ?? Number.POSITIVE_INFINITY;
-      const band = document.querySelector(".download-band")?.getBoundingClientRect();
-      const overBand = !!band && band.top < vh - 20 && band.bottom > vh - 240;
-      setCoffeeVisible(window.scrollY > Math.min(520, vh * 0.55) && faqTop > vh * 0.98 && !overBand);
+      setCoffeeVisible(window.scrollY > 90 && faqTop > vh * 0.4);
     };
     updateCoffee();
     window.addEventListener("scroll", updateCoffee, { passive: true });
@@ -161,15 +159,31 @@ function AstraPage() {
 
   useEffect(() => {
     const nodes = Array.from(document.querySelectorAll<HTMLElement>("[data-reveal]"));
+    const reveal = (el: Element) => el.classList.add("is-revealed");
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
-        (entry.target as HTMLElement).classList.add("is-revealed");
-        observer.unobserve(entry.target);
+        // reveal when visible OR when it was scrolled past quickly (already above the viewport)
+        if (entry.isIntersecting || entry.boundingClientRect.top < 0) {
+          reveal(entry.target);
+          observer.unobserve(entry.target);
+        }
       });
-    }, { threshold: 0.12, rootMargin: "0px 0px -7%" });
+    }, { threshold: 0, rootMargin: "0px 0px 8% 0px" });
     nodes.forEach((node) => observer.observe(node));
-    return () => observer.disconnect();
+    // safety net: fast scrolling can outrun the observer, so also check on scroll
+    let raf = 0;
+    const sweep = () => {
+      raf = 0;
+      const vh = window.innerHeight;
+      nodes.forEach((node) => {
+        if (!node.classList.contains("is-revealed") && node.getBoundingClientRect().top < vh * 1.05) reveal(node);
+      });
+    };
+    const onScroll = () => { if (!raf) raf = window.requestAnimationFrame(sweep); };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    sweep();
+    return () => { observer.disconnect(); window.removeEventListener("scroll", onScroll); window.removeEventListener("resize", onScroll); if (raf) window.cancelAnimationFrame(raf); };
   }, []);
 
   if (supportView === "loading") {
