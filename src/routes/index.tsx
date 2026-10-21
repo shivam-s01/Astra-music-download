@@ -281,13 +281,13 @@ function AstraPage() {
       <section id="features" className="features-section" data-reveal>
         <div className="section-title-row compact"><div><span className="section-kicker">Made to feel effortless</span><h2>Just press play.</h2></div></div>
         <div className="feature-list">
-          <article className="feature-card dark-card" data-reveal><div className="feature-icon"><Sparkles /></div><div><h3>Fresh discovery</h3><p>Playlists and recommendations that make finding your next favorite feel natural.</p></div><span className="feature-number">01</span></article>
+          <article className="feature-card dark-card wide-card" data-reveal><div className="feature-icon"><Sparkles /></div><div><h3>Fresh discovery</h3><p>Playlists and recommendations that make finding your next favorite feel natural.</p></div><span className="feature-number">01</span></article>
           <article className="feature-card aqua-card" data-reveal><div className="feature-icon"><Search /></div><div><h3>Find it fast</h3><p>Search artists, albums and songs without digging through a crowded interface.</p></div><span className="feature-number">02</span></article>
           <article className="feature-card yellow-card" data-reveal><div className="feature-icon"><Headphones /></div><div><h3>Immersive player</h3><p>Lyrics, queue and essential controls stay close while the music takes center stage.</p></div><span className="feature-number">03</span></article>
           <article className="feature-card lilac-card" data-reveal><div className="feature-icon"><Library /></div><div><h3>Your library</h3><p>Liked songs, downloads, playlists and local files—organized around you.</p></div><span className="feature-number">04</span></article>
-          <article className="feature-card coral-card wide-card" data-reveal><div className="feature-icon"><Users /></div><div><h3>Listen together</h3><p>Start a Jam, share the link, and everyone hears the same song at the same moment.</p></div><span className="feature-number">05</span></article>
-          <article className="feature-card aqua-card" data-reveal><div className="feature-icon"><Ban /></div><div><h3>Free, no ads</h3><p>Free to use, with no ads getting in the way of your music.</p></div><span className="feature-number">06</span></article>
-          <article className="feature-card dark-card" data-reveal><div className="feature-icon"><ShieldCheck /></div><div><h3>Official release</h3><p>The APK comes straight from the official GitHub release.</p></div><span className="feature-number">07</span></article>
+          <article className="feature-card coral-card" data-reveal><div className="feature-icon"><Ban /></div><div><h3>Free, no ads</h3><p>Free to use, with no ads getting in the way of your music.</p></div><span className="feature-number">05</span></article>
+          <article className="feature-card aqua-card wide-card" data-reveal><div className="feature-icon"><Users /></div><div><h3>Listen together</h3><p>Start a Jam, share the link, and everyone hears the same song at the same moment.</p></div><span className="feature-number">06</span></article>
+          <article className="feature-card dark-card wide-card" data-reveal><div className="feature-icon"><ShieldCheck /></div><div><h3>Official release</h3><p>The APK comes straight from the official GitHub release.</p></div><span className="feature-number">07</span></article>
         </div>
       </section>
 
