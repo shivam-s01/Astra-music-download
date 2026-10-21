@@ -253,13 +253,12 @@ function AstraPage() {
 
       <section id="top" className="hero-section is-revealed" data-reveal>
         <div className="hero-copy">
-          <div className="release-pill"><span /> Made for Android</div>
           <h1>Music that moves you.<br /><em><span className="nowrap">No ads.</span> <span className="nowrap">No limits.</span></em></h1>
           <p>Astra brings discovery, search, playback and your library into one joyful music experience—without the clutter.</p>
           <div className="hero-actions">
             <a className={`primary-download ${wait !== null ? "is-waiting" : ""}`} href={DOWNLOAD_URL} onClick={wait === null ? trackDownload : (e) => e.preventDefault()} aria-live="polite">
               {wait !== null ? <>Your download starts in {wait}s</> : started ? <><Check size={20} /> Download started</> : <><Download size={20} /> Download APK</>}
-              {wait !== null && <span className="wait-bar" aria-hidden="true"><i style={{ width: `${((WAIT_SECONDS - wait) / WAIT_SECONDS) * 100}%` }} /></span>}
+              {wait !== null && <span className="wait-bar" aria-hidden="true"><b style={{ width: `${((WAIT_SECONDS - wait) / WAIT_SECONDS) * 100}%`, background: "#fff" }} /></span>}
             </a>
             <a className="secondary-link" href="#screens">See it in action <span>↓</span></a>
           </div>

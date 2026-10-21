@@ -415,3 +415,4 @@ button, a, summary { -webkit-tap-highlight-color: transparent; }
 .primary-download .wait-bar { position: absolute; left: 0; right: 0; bottom: 0; height: 5px; background: rgba(255,255,255,.28); }
 .primary-download .wait-bar i { display: block; height: 100%; background: #fff; transition: width 1s linear; }
 @media (max-width: 520px) { .primary-download.is-waiting { font-size: 14px; } }
+.primary-download .wait-bar b { display: block; height: 100%; background: #fff; transition: width 1s linear; }
