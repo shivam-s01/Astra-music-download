@@ -20,6 +20,33 @@ import livePoster from "@/assets/astra-download-live-poster.jpg";
 // Keep these equal to genuine counts only. Update them as the real totals grow.
 const BASE_DOWNLOADS = 20000;
 const BASE_RATINGS = 1984;
+// Counts up from 0 on every page load and stops exactly on the real number. Later changes glide from the shown value.
+function useCountUp(target: number, ms = 1900) {
+  const [value, setValue] = useState(target);
+  const current = useRef(target);
+  const started = useRef(false);
+  useEffect(() => {
+    const reduce = typeof window.matchMedia === "function" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduce) { current.current = target; setValue(target); started.current = true; return; }
+    const from = started.current ? current.current : 0;
+    const dur = started.current ? 700 : ms;
+    started.current = true;
+    const t0 = performance.now();
+    let raf = 0;
+    const step = (now: number) => {
+      const p = Math.min(1, (now - t0) / dur);
+      const eased = 1 - Math.pow(1 - p, 3);
+      const v = Math.round(from + (target - from) * eased);
+      current.current = v;
+      setValue(v);
+      if (p < 1) raf = requestAnimationFrame(step);
+    };
+    raf = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(raf);
+  }, [target, ms]);
+  return value;
+}
+
 const SUPPORT_NOTE = "Hi! If you love Astra Music, consider supporting my work! ☕";
 const DOWNLOAD_URL = "https://github.com/shivam-s01/Aurum-app/releases/latest/download/astra-music-arm64-v8a-release.apk";
 
@@ -77,6 +104,8 @@ function AstraPage() {
   }, [fetchStats]);
   const totalDownloads = BASE_DOWNLOADS + live.downloads;
   const totalRatings = BASE_RATINGS + live.ratingCount;
+  const shownDownloads = useCountUp(totalDownloads);
+  const shownRatings = useCountUp(totalRatings, 2200);
   const trackDownload = () => {
     try {
       let id = localStorage.getItem("astra_vid");
@@ -263,8 +292,8 @@ function AstraPage() {
             <a className="secondary-link" href="#screens">See it in action <span>↓</span></a>
           </div>
           <div className="hero-stats" aria-label={`Over ${totalDownloads.toLocaleString("en-US")} downloads and ${totalRatings.toLocaleString("en-US")} ratings`}>
-            <div><strong>{totalDownloads.toLocaleString("en-US")}+</strong><span>Downloads</span></div>
-            <div><strong>{totalRatings.toLocaleString("en-US")}+</strong><span>Ratings</span></div>
+            <div><strong className="count-up"><span className="cu-ghost" aria-hidden="true">{totalDownloads.toLocaleString("en-US")}+</span><span className="cu-live" aria-hidden="true">{shownDownloads.toLocaleString("en-US")}+</span></strong><span>Downloads</span></div>
+            <div><strong className="count-up"><span className="cu-ghost" aria-hidden="true">{totalRatings.toLocaleString("en-US")}+</span><span className="cu-live" aria-hidden="true">{shownRatings.toLocaleString("en-US")}+</span></strong><span>Ratings</span></div>
           </div>
           <ul className="trust-chips" aria-label="Why you can trust this download">
             <li><ShieldCheck size={15} /> Official GitHub release</li>

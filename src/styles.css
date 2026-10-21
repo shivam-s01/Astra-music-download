@@ -416,3 +416,13 @@ button, a, summary { -webkit-tap-highlight-color: transparent; }
 .primary-download .wait-bar i { display: block; height: 100%; background: #fff; transition: width 1s linear; }
 @media (max-width: 520px) { .primary-download.is-waiting { font-size: 14px; } }
 .primary-download .wait-bar b { display: block; height: 100%; background: #fff; transition: width 1s linear; }
+
+/* animated hero counters: ghost reserves the final width so nothing jumps while counting */
+.hero-stats strong.count-up { display: inline-grid; font-variant-numeric: tabular-nums; }
+.hero-stats strong.count-up > span { grid-area: 1 / 1; }
+.hero-stats strong.count-up .cu-ghost { visibility: hidden; }
+
+/* pull the hero content up closer to the header */
+.hero-section { padding-top: 34px; }
+@media (max-width: 820px) { .hero-section { padding-top: 12px; } }
+@media (max-width: 520px) { .site-header { min-height: 64px; } .hero-section { padding-top: 4px; } }
