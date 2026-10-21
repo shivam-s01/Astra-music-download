@@ -9,9 +9,9 @@ function Privacy(){return <LegalPage eyebrow="Legal" title="Privacy Policy">
   <h2>Device permissions</h2>
   <p>Astra may request access to audio or media files, notifications, and network connectivity when those permissions are needed for a feature. You can review or revoke permissions at any time in Android settings, although some features may then stop working.</p>
   <h2>This website</h2>
-  <p>When you tap Download APK, this website stores a random anonymous visitor ID in your browser and on its server so each visitor is counted at most once every 10 minutes. No name, email, or account is needed for this. Comments and ratings you submit are stored with your message and rating, and appear publicly only after review. Please do not include personal details in a comment.</p>
+  <p>This website may keep basic anonymous usage information, such as download counts, and the comments or ratings you choose to submit. Comments appear publicly only after review, so please do not include personal details in them.</p>
   <h2>Jam sessions</h2>
-  <p>A Jam is shared with the people you give its code or link to. Anyone who joins can take part in that session, so share the invite only with people you want to listen with. Invite pages on this website do not require an account.</p>
+  <p>A Jam is shared only with the people you give its code or link to.</p>
   <h2>Third-party services</h2>
   <p>Astra is an independent third-party music client and may send requests to music, hosting, or other external services. Those services process information under their own privacy policies. Astra does not control their practices.</p>
   <h2>Data sharing and sale</h2>

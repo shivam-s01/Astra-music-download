@@ -4,7 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { listComments, submitComment } from "@/lib/comments.functions";
 import { getPublicStats } from "@/lib/stats.functions";
 import { SupportPage } from "@/components/SupportPage";
-import { ArrowLeft, Check, Coffee, Copy, MessageCircle, Star, Download, Headphones, Library, Search, ShieldCheck, Sparkles, Users, Link2, Lock, FileText } from "lucide-react";
+import { ArrowLeft, Check, Coffee, Copy, MessageCircle, Star, Download, Headphones, Library, Search, ShieldCheck, Sparkles, Users, Ban } from "lucide-react";
 import homeImage from "@/assets/astra-app-home-real.jpg";
 import libraryImage from "@/assets/astra-app-library-real.jpg";
 import exploreImage from "@/assets/astra-app-explore-real.jpg";
@@ -236,7 +236,7 @@ function AstraPage() {
       <section id="top" className="hero-section is-revealed" data-reveal>
         <div className="hero-copy">
           <div className="release-pill"><span /> Made for Android</div>
-          <h1>Music that moves you.<br /><em>No ads. No limits.</em></h1>
+          <h1>Music that moves you.<br /><em><span className="nowrap">No ads.</span> <span className="nowrap">No limits.</span></em></h1>
           <p>Astra brings discovery, search, playback and your library into one joyful music experience—without the clutter.</p>
           <div className="hero-actions">
             <a className="primary-download" href={DOWNLOAD_URL} onClick={trackDownload}><Download size={20} /> Download APK</a>
@@ -248,7 +248,7 @@ function AstraPage() {
           </div>
           <ul className="trust-chips" aria-label="Why you can trust this download">
             <li><ShieldCheck size={15} /> Official GitHub release</li>
-            <li><Download size={15} /> Direct APK, no middle-man</li>
+            <li><Download size={15} /> Free, no ads</li>
             <li><Users size={15} /> Jam: listen together</li>
           </ul>
         </div>
@@ -285,27 +285,10 @@ function AstraPage() {
           <article className="feature-card aqua-card" data-reveal><div className="feature-icon"><Search /></div><div><h3>Find it fast</h3><p>Search artists, albums and songs without digging through a crowded interface.</p></div><span className="feature-number">02</span></article>
           <article className="feature-card yellow-card" data-reveal><div className="feature-icon"><Headphones /></div><div><h3>Immersive player</h3><p>Lyrics, queue and essential controls stay close while the music takes center stage.</p></div><span className="feature-number">03</span></article>
           <article className="feature-card lilac-card" data-reveal><div className="feature-icon"><Library /></div><div><h3>Your library</h3><p>Liked songs, downloads, playlists and local files—organized around you.</p></div><span className="feature-number">04</span></article>
+          <article className="feature-card coral-card wide-card" data-reveal><div className="feature-icon"><Users /></div><div><h3>Listen together</h3><p>Start a Jam, share the link, and everyone hears the same song at the same moment.</p></div><span className="feature-number">05</span></article>
+          <article className="feature-card aqua-card" data-reveal><div className="feature-icon"><Ban /></div><div><h3>Free, no ads</h3><p>Free to use, with no ads getting in the way of your music.</p></div><span className="feature-number">06</span></article>
+          <article className="feature-card dark-card" data-reveal><div className="feature-icon"><ShieldCheck /></div><div><h3>Official release</h3><p>The APK comes straight from the official GitHub release.</p></div><span className="feature-number">07</span></article>
         </div>
-      </section>
-
-      <section id="jam" className="jam-section" data-reveal>
-        <div className="section-title-row compact"><div><span className="section-kicker">New: Astra Jam</span><h2>Listen together.</h2></div><p>Start a Jam, share the link, and play the same song at the same moment with a friend.</p></div>
-        <ol className="jam-steps">
-          <li><b>1</b><div><h3>Start a Jam</h3><p>Open Astra, go to Jam and create a session. You get a 6-character code and an invite link.</p></div></li>
-          <li><b>2</b><div><h3>Share the link</h3><p>Send it to a friend. On Android with Astra installed it opens the Jam directly; the code is also copied for you.</p></div></li>
-          <li><b>3</b><div><h3>Press play together</h3><p>Everyone in the Jam hears the same track in sync. No Astra yet? The invite page links straight to the download.</p></div></li>
-        </ol>
-      </section>
-
-      <section id="trust" className="trust-section" data-reveal>
-        <div className="section-title-row compact"><div><span className="section-kicker">Transparency</span><h2>What you're installing.</h2></div><p>Astra is an independent app. Here is exactly what to expect, so you can decide for yourself.</p></div>
-        <div className="trust-grid">
-          <article><ShieldCheck /><h3>Official source</h3><p>The Download APK button fetches the newest release from the developer's own GitHub releases page. This site never rehosts or modifies the file.</p></article>
-          <article><Link2 /><h3>Verify it yourself</h3><p>Every release is public on GitHub, with its file name and date. You can check it there, or scan the APK with VirusTotal before installing.</p></article>
-          <article><Lock /><h3>Your privacy</h3><p>Astra does not sell personal information. This website only keeps an anonymous visitor ID to count downloads once per visitor. <Link to="/privacy">Read the Privacy Policy</Link>.</p></article>
-          <article><FileText /><h3>Clear terms</h3><p>Astra is an independent third-party client. It does not host or own music, and you are responsible for lawful use. <Link to="/terms">Read the Terms</Link>.</p></article>
-        </div>
-        <p className="trust-note">Android may warn you when installing an APK from outside the Play Store. That is normal for any app installed this way. Only install it if you trust the source.</p>
       </section>
 
       <section className="download-band" data-reveal>
@@ -331,7 +314,7 @@ function AstraPage() {
 
       <footer className="site-footer">
         <div className="footer-brand"><img src="/favicon.png" alt="" /><div><strong>Astra Music</strong><span>Music feels better here.</span></div></div>
-        <div className="footer-links"><a href="#jam">Jam</a><a href="#trust">Transparency</a><Link to="/privacy">Privacy</Link><Link to="/terms">Terms</Link><Link to="/contact">Developer Support</Link></div>
+        <div className="footer-links"><Link to="/privacy">Privacy</Link><Link to="/terms">Terms</Link><Link to="/contact">Developer Support</Link></div>
         <span className="copyright">© 2026 Astra Music · Made for Android</span>
       </footer>
 
