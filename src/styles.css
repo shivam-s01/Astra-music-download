@@ -408,3 +408,10 @@ button, a, summary { -webkit-tap-highlight-color: transparent; }
   .feature-list .feature-card.wide-card p { font-size: 13px; }
   .feature-list .feature-card .feature-icon { width: 42px; height: 42px; }
 }
+
+/* hero download countdown (stays orange) */
+.primary-download { position: relative; overflow: hidden; }
+.primary-download.is-waiting { pointer-events: none; cursor: default; text-align: center; font-size: 15px; line-height: 1.25; padding: 0 20px; }
+.primary-download .wait-bar { position: absolute; left: 0; right: 0; bottom: 0; height: 5px; background: rgba(255,255,255,.28); }
+.primary-download .wait-bar i { display: block; height: 100%; background: #fff; transition: width 1s linear; }
+@media (max-width: 520px) { .primary-download.is-waiting { font-size: 14px; } }

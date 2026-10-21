@@ -91,6 +91,25 @@ function AstraPage() {
       if (!sent) fetch("/api/public/track-download", { method: "POST", body, keepalive: true }).catch(() => {});
     } catch { /* storage blocked — skip */ }
   };
+  // Hero button: countdown starts when the page opens, then the download starts automatically.
+  // The bottom button downloads instantly (and cancels the countdown so nothing downloads twice).
+  const WAIT_SECONDS = 25;
+  const [wait, setWait] = useState<number | null>(WAIT_SECONDS);
+  const [started, setStarted] = useState(false);
+  const bottomDownload = () => { setWait(null); trackDownload(); };
+  useEffect(() => {
+    if (wait === null) return;
+    if (wait <= 0) {
+      trackDownload();
+      window.location.assign(DOWNLOAD_URL);
+      setWait(null);
+      setStarted(true);
+      const t = window.setTimeout(() => setStarted(false), 6000);
+      return () => window.clearTimeout(t);
+    }
+    const t = window.setTimeout(() => setWait((w) => (w === null ? w : w - 1)), 1000);
+    return () => window.clearTimeout(t);
+  }, [wait]);
   const [meowing, setMeowing] = useState(false);
   type CatMode = "sit" | "walk" | "look" | "catch" | "groove" | "sleep" | "wake";
   const [catMode, setCatMode] = useState<CatMode>("sit");
@@ -230,7 +249,6 @@ function AstraPage() {
         <nav className="desktop-nav" aria-label="Main navigation">
           <a href="#screens">Screens</a><a href="#features">Features</a><a href="#faq">FAQ</a>
         </nav>
-        <a className="header-download" href={DOWNLOAD_URL} onClick={trackDownload}><Download size={15} /> Download</a>
       </header>
 
       <section id="top" className="hero-section is-revealed" data-reveal>
@@ -239,7 +257,10 @@ function AstraPage() {
           <h1>Music that moves you.<br /><em><span className="nowrap">No ads.</span> <span className="nowrap">No limits.</span></em></h1>
           <p>Astra brings discovery, search, playback and your library into one joyful music experience—without the clutter.</p>
           <div className="hero-actions">
-            <a className="primary-download" href={DOWNLOAD_URL} onClick={trackDownload}><Download size={20} /> Download APK</a>
+            <a className={`primary-download ${wait !== null ? "is-waiting" : ""}`} href={DOWNLOAD_URL} onClick={wait === null ? trackDownload : (e) => e.preventDefault()} aria-live="polite">
+              {wait !== null ? <>Your download starts in {wait}s</> : started ? <><Check size={20} /> Download started</> : <><Download size={20} /> Download APK</>}
+              {wait !== null && <span className="wait-bar" aria-hidden="true"><i style={{ width: `${((WAIT_SECONDS - wait) / WAIT_SECONDS) * 100}%` }} /></span>}
+            </a>
             <a className="secondary-link" href="#screens">See it in action <span>↓</span></a>
           </div>
           <div className="hero-stats" aria-label={`Over ${totalDownloads.toLocaleString("en-US")} downloads and ${totalRatings.toLocaleString("en-US")} ratings`}>
@@ -294,7 +315,7 @@ function AstraPage() {
       <section className="download-band" data-reveal>
         <div className="band-live" aria-hidden="true"><video poster={livePoster} autoPlay muted loop playsInline preload="auto"><source src={liveVideoWebm} type="video/webm" /><source src={liveVideo} type="video/mp4" /></video></div>
         <div className="download-copy"><img src="/favicon.png" alt="" /><div><span>ASTRA MUSIC FOR ANDROID</span><h2>Turn up your everyday.</h2><p>Download the latest Astra APK and start listening.</p></div></div>
-        <div className="download-side"><a className="band-download" href={DOWNLOAD_URL} onClick={trackDownload}><Download size={20} /> Download APK</a><span><ShieldCheck size={14} /> Latest official release</span></div>
+        <div className="download-side"><a className="band-download" href={DOWNLOAD_URL} onClick={bottomDownload}><Download size={20} /> Download APK</a><span><ShieldCheck size={14} /> Latest official release</span></div>
       </section>
 
       <section id="faq" className="faq-section" data-reveal>
