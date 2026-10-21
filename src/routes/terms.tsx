@@ -2,12 +2,14 @@ import { createFileRoute } from "@tanstack/react-router";
 import { LegalPage } from "@/components/LegalPage";
 export const Route = createFileRoute("/terms")({ head:()=>({meta:[{title:"Terms & Conditions — Astra Music"},{name:"description",content:"Terms and conditions for Astra Music."},{property:"og:title",content:"Terms & Conditions — Astra Music"},{property:"og:description",content:"Terms and conditions for Astra Music."},{property:"og:type",content:"website"},{property:"og:url",content:"/terms"},{name:"twitter:card",content:"summary"}],links:[{rel:"canonical",href:"/terms"}]}), component:Terms });
 function Terms(){return <LegalPage eyebrow="Legal" title="Terms & Conditions">
-  <p>Last updated: September 18, 2026</p>
+  <p>Last updated: October 22, 2026</p>
   <p>By downloading or using Astra Music, you agree to these terms. If you do not agree, do not use the app.</p>
   <h2>License and acceptable use</h2>
   <p>You receive a limited, personal, non-exclusive, and revocable right to use Astra on a compatible Android device. You must not misuse the app, interfere with its operation, bypass security measures, distribute harmful code, or use it unlawfully.</p>
   <h2>Music and third-party content</h2>
   <p>Astra is an independent third-party client. It does not host, own, or claim rights to music, artwork, lyrics, or other content supplied by users or external services. You are responsible for following applicable law, service terms, and creators’ rights.</p>
+  <h2>Jam sessions</h2>
+  <p>You are responsible for who you invite to a Jam and for following these terms while using it. Do not use Jam to harass others or share unlawful content.</p>
   <h2>Downloads and local files</h2>
   <p>You are responsible for ensuring that any content you access, save, or play through Astra is lawful in your location and that you have all necessary permissions.</p>
   <h2>Updates and availability</h2>

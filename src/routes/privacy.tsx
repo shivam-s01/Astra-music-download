@@ -2,12 +2,16 @@ import { createFileRoute } from "@tanstack/react-router";
 import { LegalPage } from "@/components/LegalPage";
 export const Route = createFileRoute("/privacy")({ head:()=>({meta:[{title:"Privacy Policy — Astra Music"},{name:"description",content:"Privacy Policy for Astra Music."},{property:"og:title",content:"Privacy Policy — Astra Music"},{property:"og:description",content:"Privacy Policy for Astra Music."},{property:"og:type",content:"website"},{property:"og:url",content:"/privacy"},{name:"twitter:card",content:"summary"}],links:[{rel:"canonical",href:"/privacy"}]}), component:Privacy });
 function Privacy(){return <LegalPage eyebrow="Legal" title="Privacy Policy">
-  <p>Last updated: September 18, 2026</p>
+  <p>Last updated: October 22, 2026</p>
   <p>This policy explains how Astra Music handles information when you use the Android application or this website.</p>
   <h2>Information Astra may process</h2>
   <p>Astra may process search queries, playback requests, playlists, liked songs, listening preferences, app settings, and basic device or diagnostic information needed to provide and improve its features. Information stored locally remains on your device unless a feature clearly requires an external service.</p>
   <h2>Device permissions</h2>
   <p>Astra may request access to audio or media files, notifications, and network connectivity when those permissions are needed for a feature. You can review or revoke permissions at any time in Android settings, although some features may then stop working.</p>
+  <h2>This website</h2>
+  <p>When you tap Download APK, this website stores a random anonymous visitor ID in your browser and on its server so each visitor is counted at most once every 10 minutes. No name, email, or account is needed for this. Comments and ratings you submit are stored with your message and rating, and appear publicly only after review. Please do not include personal details in a comment.</p>
+  <h2>Jam sessions</h2>
+  <p>A Jam is shared with the people you give its code or link to. Anyone who joins can take part in that session, so share the invite only with people you want to listen with. Invite pages on this website do not require an account.</p>
   <h2>Third-party services</h2>
   <p>Astra is an independent third-party music client and may send requests to music, hosting, or other external services. Those services process information under their own privacy policies. Astra does not control their practices.</p>
   <h2>Data sharing and sale</h2>

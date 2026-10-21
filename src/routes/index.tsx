@@ -4,7 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { listComments, submitComment } from "@/lib/comments.functions";
 import { getPublicStats } from "@/lib/stats.functions";
 import { SupportPage } from "@/components/SupportPage";
-import { ArrowLeft, Check, Coffee, Copy, MessageCircle, Star, Download, Headphones, Library, Search, ShieldCheck, Sparkles } from "lucide-react";
+import { ArrowLeft, Check, Coffee, Copy, MessageCircle, Star, Download, Headphones, Library, Search, ShieldCheck, Sparkles, Users, Link2, Lock, FileText } from "lucide-react";
 import homeImage from "@/assets/astra-app-home-real.jpg";
 import libraryImage from "@/assets/astra-app-library-real.jpg";
 import exploreImage from "@/assets/astra-app-explore-real.jpg";
@@ -16,10 +16,10 @@ import liveVideo from "@/assets/astra-download-live.mp4";
 import liveVideoWebm from "@/assets/astra-download-live.webm";
 import livePoster from "@/assets/astra-download-live-poster.jpg";
 
-// Starting numbers; real downloads/ratings from this site are added on top.
+// Starting totals confirmed by the developer; real downloads/ratings from this site are added on top.
+// Keep these equal to genuine counts only. Update them as the real totals grow.
 const BASE_DOWNLOADS = 20000;
-const BASE_RATINGS = 14500;
-const BASE_AVG = 4.9;
+const BASE_RATINGS = 1984;
 const SUPPORT_NOTE = "Hi! If you love Astra Music, consider supporting my work! ☕";
 const DOWNLOAD_URL = "https://github.com/shivam-s01/Aurum-app/releases/latest/download/astra-music-arm64-v8a-release.apk";
 
@@ -37,7 +37,7 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Astra Music Download — Free Android Music Player APK" },
-      { name: "description", content: "Download Astra Music for Android — free music player app. Get the latest official Astra Music APK, discover songs and build your library. Safe direct download." },
+      { name: "description", content: "Download Astra Music for Android — free music player app. Get the latest official Astra Music APK, discover songs and build your library. Direct download from the official GitHub release." },
       { name: "keywords", content: "Astra Music, Astra Music download, Astra Music APK, Astra Music app, Astra Music Android, free music player APK" },
       { name: "robots", content: "index, follow, max-image-preview:large" },
       { name: "theme-color", content: "#0b0b10" },
@@ -53,7 +53,7 @@ export const Route = createFileRoute("/")({
       { name: "twitter:image", content: "https://astra.mmusic.workers.dev/astra-share-cover.jpg" },
     ],
     links: [{ rel: "canonical", href: "https://astra.mmusic.workers.dev/" }],
-    scripts: [{ type: "application/ld+json", children: JSON.stringify([{"@context": "https://schema.org", "@type": "WebSite", "name": "Astra Music", "alternateName": ["Astra Music Download", "Astra Music APK"], "url": "https://astra.mmusic.workers.dev/"}, {"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "Astra Music", "operatingSystem": "Android", "applicationCategory": "MusicApplication", "description": "Download Astra Music for Android — a free, focused music player for discovery, playback and your personal library.", "url": "https://astra.mmusic.workers.dev/", "downloadUrl": "https://astra.mmusic.workers.dev/api/public/download", "image": "https://astra.mmusic.workers.dev/astra-share-cover.jpg", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}, {"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What is Astra Music?", "acceptedAnswer": {"@type": "Answer", "text": "Astra Music is a free Android music player app for discovering songs, playing music and building your personal library."}}, {"@type": "Question", "name": "How do I download Astra Music APK?", "acceptedAnswer": {"@type": "Answer", "text": "Tap any Download APK button on this page. The latest official Astra Music APK for Android (arm64-v8a) downloads directly from the official GitHub release."}}, {"@type": "Question", "name": "Is Astra Music free?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Astra Music is free to download and use."}}, {"@type": "Question", "name": "Does Astra need an account?", "acceptedAnswer": {"@type": "Answer", "text": "Account requirements depend on the services and features available in the current build."}}, {"@type": "Question", "name": "Which Android versions are supported?", "acceptedAnswer": {"@type": "Answer", "text": "Check the latest release information before installing to confirm compatibility with your device."}}]}]) }],
+    scripts: [{ type: "application/ld+json", children: JSON.stringify([{"@context": "https://schema.org", "@type": "WebSite", "name": "Astra Music", "alternateName": ["Astra Music Download", "Astra Music APK"], "url": "https://astra.mmusic.workers.dev/"}, {"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "Astra Music", "operatingSystem": "Android", "applicationCategory": "MusicApplication", "description": "Download Astra Music for Android — a free, focused music player for discovery, playback and your personal library.", "url": "https://astra.mmusic.workers.dev/", "downloadUrl": "https://astra.mmusic.workers.dev/api/public/download", "image": "https://astra.mmusic.workers.dev/astra-share-cover.jpg", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}, {"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What is Astra Music?", "acceptedAnswer": {"@type": "Answer", "text": "Astra Music is a free Android music player app for discovering songs, playing music and building your personal library."}}, {"@type": "Question", "name": "How do I download Astra Music APK?", "acceptedAnswer": {"@type": "Answer", "text": "Tap any Download APK button on this page. The latest official Astra Music APK for Android (arm64-v8a) downloads directly from the official GitHub release."}}, {"@type": "Question", "name": "Is Astra Music free?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Astra Music is free to download and use."}}, {"@type": "Question", "name": "Does Astra need an account?", "acceptedAnswer": {"@type": "Answer", "text": "Account requirements depend on the services and features available in the current build."}}, {"@type": "Question", "name": "What is Jam?", "acceptedAnswer": {"@type": "Answer", "text": "Jam lets you listen together with friends. One person starts a Jam and shares a code or link, and everyone who joins plays the same song in sync."}}, {"@type": "Question", "name": "Is it safe to install?", "acceptedAnswer": {"@type": "Answer", "text": "The APK comes straight from the developer's official GitHub release. Android shows a standard warning for any APK installed outside the Play Store."}}, {"@type": "Question", "name": "Which Android versions are supported?", "acceptedAnswer": {"@type": "Answer", "text": "Check the latest release information before installing to confirm compatibility with your device."}}]}]) }],
   }),
   component: AstraPage,
 });
@@ -77,7 +77,6 @@ function AstraPage() {
   }, [fetchStats]);
   const totalDownloads = BASE_DOWNLOADS + live.downloads;
   const totalRatings = BASE_RATINGS + live.ratingCount;
-  const avgRating = ((BASE_RATINGS * BASE_AVG + live.ratingSum) / totalRatings).toFixed(1);
   const trackDownload = () => {
     try {
       let id = localStorage.getItem("astra_vid");
@@ -237,17 +236,21 @@ function AstraPage() {
       <section id="top" className="hero-section is-revealed" data-reveal>
         <div className="hero-copy">
           <div className="release-pill"><span /> Made for Android</div>
-          <h1>Your music.<br /><em>Your moment.</em></h1>
+          <h1>Music that moves you.<br /><em>No ads. No limits.</em></h1>
           <p>Astra brings discovery, search, playback and your library into one joyful music experience—without the clutter.</p>
           <div className="hero-actions">
             <a className="primary-download" href={DOWNLOAD_URL} onClick={trackDownload}><Download size={20} /> Download APK</a>
             <a className="secondary-link" href="#screens">See it in action <span>↓</span></a>
           </div>
-          <div className="hero-stats" aria-label={`Over ${totalDownloads.toLocaleString("en-US")} downloads, ${totalRatings.toLocaleString("en-US")} plus ratings, ${avgRating} average rating`}>
+          <div className="hero-stats" aria-label={`Over ${totalDownloads.toLocaleString("en-US")} downloads and ${totalRatings.toLocaleString("en-US")} ratings`}>
             <div><strong>{totalDownloads.toLocaleString("en-US")}+</strong><span>Downloads</span></div>
             <div><strong>{totalRatings.toLocaleString("en-US")}+</strong><span>Ratings</span></div>
-            <div><strong>{avgRating}<span className="stat-star">★</span></strong><span>Average rating</span></div>
           </div>
+          <ul className="trust-chips" aria-label="Why you can trust this download">
+            <li><ShieldCheck size={15} /> Official GitHub release</li>
+            <li><Download size={15} /> Direct APK, no middle-man</li>
+            <li><Users size={15} /> Jam: listen together</li>
+          </ul>
         </div>
         <div className="hero-art" aria-label="Astra Music app preview">
           <div className="burst burst-one" /><div className="burst burst-two" />
@@ -285,6 +288,26 @@ function AstraPage() {
         </div>
       </section>
 
+      <section id="jam" className="jam-section" data-reveal>
+        <div className="section-title-row compact"><div><span className="section-kicker">New: Astra Jam</span><h2>Listen together.</h2></div><p>Start a Jam, share the link, and play the same song at the same moment with a friend.</p></div>
+        <ol className="jam-steps">
+          <li><b>1</b><div><h3>Start a Jam</h3><p>Open Astra, go to Jam and create a session. You get a 6-character code and an invite link.</p></div></li>
+          <li><b>2</b><div><h3>Share the link</h3><p>Send it to a friend. On Android with Astra installed it opens the Jam directly; the code is also copied for you.</p></div></li>
+          <li><b>3</b><div><h3>Press play together</h3><p>Everyone in the Jam hears the same track in sync. No Astra yet? The invite page links straight to the download.</p></div></li>
+        </ol>
+      </section>
+
+      <section id="trust" className="trust-section" data-reveal>
+        <div className="section-title-row compact"><div><span className="section-kicker">Transparency</span><h2>What you're installing.</h2></div><p>Astra is an independent app. Here is exactly what to expect, so you can decide for yourself.</p></div>
+        <div className="trust-grid">
+          <article><ShieldCheck /><h3>Official source</h3><p>The Download APK button fetches the newest release from the developer's own GitHub releases page. This site never rehosts or modifies the file.</p></article>
+          <article><Link2 /><h3>Verify it yourself</h3><p>Every release is public on GitHub, with its file name and date. You can check it there, or scan the APK with VirusTotal before installing.</p></article>
+          <article><Lock /><h3>Your privacy</h3><p>Astra does not sell personal information. This website only keeps an anonymous visitor ID to count downloads once per visitor. <Link to="/privacy">Read the Privacy Policy</Link>.</p></article>
+          <article><FileText /><h3>Clear terms</h3><p>Astra is an independent third-party client. It does not host or own music, and you are responsible for lawful use. <Link to="/terms">Read the Terms</Link>.</p></article>
+        </div>
+        <p className="trust-note">Android may warn you when installing an APK from outside the Play Store. That is normal for any app installed this way. Only install it if you trust the source.</p>
+      </section>
+
       <section className="download-band" data-reveal>
         <div className="band-live" aria-hidden="true"><video poster={livePoster} autoPlay muted loop playsInline preload="auto"><source src={liveVideoWebm} type="video/webm" /><source src={liveVideo} type="video/mp4" /></video></div>
         <div className="download-copy"><img src="/favicon.png" alt="" /><div><span>ASTRA MUSIC FOR ANDROID</span><h2>Turn up your everyday.</h2><p>Download the latest Astra APK and start listening.</p></div></div>
@@ -298,6 +321,8 @@ function AstraPage() {
           <details><summary>How do I download Astra Music APK?<span aria-hidden="true">+</span></summary><p>Tap any Download APK button on this page. The latest official Astra Music APK for Android (arm64-v8a) downloads directly from the official GitHub release.</p></details>
           <details><summary>Is Astra Music free?<span aria-hidden="true">+</span></summary><p>Yes. Astra Music is free to download and use.</p></details>
           <details><summary>Does Astra need an account?<span aria-hidden="true">+</span></summary><p>Account requirements depend on the services and features available in the current build.</p></details>
+          <details><summary>What is Jam?<span aria-hidden="true">+</span></summary><p>Jam lets you listen together with friends. One person starts a Jam and shares a 6-character code or link; everyone who joins plays the same song in sync.</p></details>
+          <details><summary>Is it safe to install?<span aria-hidden="true">+</span></summary><p>The APK comes straight from the developer's official GitHub release. Android shows a standard warning for any APK installed outside the Play Store. You can scan the file with VirusTotal first and read the Privacy Policy and Terms linked in the footer.</p></details>
           <details><summary>Which Android versions are supported?<span aria-hidden="true">+</span></summary><p>Check the latest release information before installing to confirm compatibility with your device.</p></details>
         </div>
       </section>
@@ -306,7 +331,7 @@ function AstraPage() {
 
       <footer className="site-footer">
         <div className="footer-brand"><img src="/favicon.png" alt="" /><div><strong>Astra Music</strong><span>Music feels better here.</span></div></div>
-        <div className="footer-links"><Link to="/privacy">Privacy</Link><Link to="/terms">Terms</Link><Link to="/contact">Developer Support</Link></div>
+        <div className="footer-links"><a href="#jam">Jam</a><a href="#trust">Transparency</a><Link to="/privacy">Privacy</Link><Link to="/terms">Terms</Link><Link to="/contact">Developer Support</Link></div>
         <span className="copyright">© 2026 Astra Music · Made for Android</span>
       </footer>
 
