@@ -216,7 +216,7 @@ function AstraPage() {
           observer.unobserve(entry.target);
         }
       });
-    }, { threshold: 0, rootMargin: "0px 0px 8% 0px" });
+    }, { threshold: 0, rootMargin: "0px 0px -8% 0px" });
     nodes.forEach((node) => observer.observe(node));
     // safety net: fast scrolling can outrun the observer, so also check on scroll
     let raf = 0;
@@ -224,7 +224,7 @@ function AstraPage() {
       raf = 0;
       const vh = window.innerHeight;
       nodes.forEach((node) => {
-        if (!node.classList.contains("is-revealed") && node.getBoundingClientRect().top < vh * 1.05) reveal(node);
+        if (!node.classList.contains("is-revealed") && node.getBoundingClientRect().top < vh * 0.92) reveal(node);
       });
     };
     const onScroll = () => { if (!raf) raf = window.requestAnimationFrame(sweep); };
