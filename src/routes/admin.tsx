@@ -94,7 +94,7 @@ function Dashboard() {
 
   const load = useCallback(async () => {
     const [c, s, d] = await Promise.all([
-      supabase.from("astra_comments").select("id, message, rating, status, created_at").order("created_at", { ascending: false }).limit(500),
+      supabase.from("astra_comments").select("id, message, rating, status, created_at").not("message", "like", "[rating:%").order("created_at", { ascending: false }).limit(500),
       supabase.rpc("visit_stats"),
       supabase.from("site_downloads").select("id", { count: "exact", head: true }),
     ]);

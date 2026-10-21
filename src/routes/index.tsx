@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { listComments, submitComment } from "@/lib/comments.functions";
+import { listComments, submitComment, submitRating } from "@/lib/comments.functions";
 import { getPublicStats } from "@/lib/stats.functions";
 import { SupportPage } from "@/components/SupportPage";
 import { ArrowLeft, Check, Coffee, Copy, MessageCircle, Star, Download, Headphones, Library, Search, ShieldCheck, Sparkles, Users, Ban } from "lucide-react";
@@ -405,35 +405,48 @@ type Comment = { id: string; message: string; rating: number | null; created_at:
 function CommunitySection() {
   const fetchComments = useServerFn(listComments);
   const send = useServerFn(submitComment);
+  const sendRating = useServerFn(submitRating);
   const [comments, setComments] = useState<Comment[]>([]);
   const [text, setText] = useState("");
   const [rating, setRating] = useState(0);
+  const [rateState, setRateState] = useState<"idle" | "saving" | "saved" | "error">("idle");
   const [state, setState] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [error, setError] = useState("");
   useEffect(() => { fetchComments().then((r) => setComments(r.comments)).catch(() => {}); }, [fetchComments]);
+  useEffect(() => { try { const r = Number(localStorage.getItem("astra_rating") || 0); if (r >= 1 && r <= 5) { setRating(r); setRateState("saved"); } } catch { /* storage blocked */ } }, []);
+  // Tapping a star saves the rating straight away: no message, no approval.
+  const onRate = async (n: number) => {
+    setRating(n); setRateState("saving");
+    try {
+      let id = "";
+      try { id = localStorage.getItem("astra_vid") || ""; if (!id) { id = crypto.randomUUID(); localStorage.setItem("astra_vid", id); } } catch { id = crypto.randomUUID(); }
+      const r = await sendRating({ data: { rating: n, visitorId: id } });
+      if (r.ok) { setRateState("saved"); try { localStorage.setItem("astra_rating", String(n)); } catch { /* ignore */ } } else setRateState("error");
+    } catch { setRateState("error"); }
+  };
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const msg = text.trim();
     if (msg.length < 3) { setState("error"); setError("Please write at least 3 characters."); return; }
     setState("sending");
     try {
-      const r = await send({ data: { message: msg, ...(rating ? { rating } : {}) } });
-      if (r.ok) { setState("sent"); setText(""); setRating(0); } else { setState("error"); setError(r.error ?? "Something went wrong."); }
+      const r = await send({ data: { message: msg } });
+      if (r.ok) { setState("sent"); setText(""); } else { setState("error"); setError(r.error ?? "Something went wrong."); }
     } catch { setState("error"); setError("Could not send right now. Please try again."); }
   };
   return (
     <section id="community" className="community-section" data-reveal>
-      <div><span className="section-kicker">Community</span><h2>Say something.</h2><p>Share feedback, a feature idea or just what you love. No name or account needed — messages appear after a quick review.</p></div>
+      <div><span className="section-kicker">Community</span><h2>Say something.</h2><p>Share feedback, a feature idea or just what you love. Tap a star to rate instantly. No name, account or message needed. Written messages appear after a quick review.</p></div>
       <div className="community-body">
         <form className="comment-form" onSubmit={onSubmit}>
           <div className="star-input" role="radiogroup" aria-label="Rate Astra">
             {[1, 2, 3, 4, 5].map((n) => (
-              <button key={n} type="button" role="radio" aria-checked={rating === n} aria-label={`${n} star${n > 1 ? "s" : ""}`} className={n <= rating ? "on" : ""} onClick={() => { setRating(rating === n ? 0 : n); if (state !== "sending") setState("idle"); }}><Star size={26} /></button>
+              <button key={n} type="button" role="radio" aria-checked={rating === n} aria-label={`${n} star${n > 1 ? "s" : ""}`} className={n <= rating ? "on" : ""} onClick={() => onRate(n)} disabled={rateState === "saving"}><Star size={26} /></button>
             ))}
-            <small>{rating ? `${rating}/5` : "Optional"}</small>
+            <small role="status">{rateState === "saving" ? "Saving…" : rateState === "saved" ? "Thanks for rating!" : rateState === "error" ? "Try again" : "Tap to rate"}</small>
           </div>
           <label htmlFor="comment-text" className="sr-only">Your message</label>
-          <textarea id="comment-text" maxLength={400} rows={4} placeholder="Write your message…" value={text} onChange={(e) => { setText(e.target.value); if (state !== "sending") setState("idle"); }} />
+          <textarea id="comment-text" maxLength={400} rows={4} placeholder="Write a message (optional)…" value={text} onChange={(e) => { setText(e.target.value); if (state !== "sending") setState("idle"); }} />
           <div className="comment-actions"><small>{text.length}/400</small><button type="submit" disabled={state === "sending"}><MessageCircle size={16} /> {state === "sending" ? "Sending…" : "Post"}</button></div>
           {state === "sent" && <p className="comment-status ok" role="status">Thank you! Your message will appear after review.</p>}
           {state === "error" && <p className="comment-status err" role="alert">{error}</p>}
