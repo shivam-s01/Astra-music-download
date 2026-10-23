@@ -1,0 +1,9 @@
+{
+  "name": "astra-jam-server",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node test/room.check.mjs",
+    "deploy": "wrangler deploy"
+  }
+}
