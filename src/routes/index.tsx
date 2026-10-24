@@ -10,6 +10,8 @@ import suggestionsImage from "@/assets/astra-app-suggestions-real.jpg";
 import resultsImage from "@/assets/astra-app-results-real.jpg";
 import playerImage from "@/assets/astra-app-player-real.jpg";
 import lyricsImage from "@/assets/astra-app-lyrics-real.jpg";
+import liveVideo from "@/assets/astra-download-live.mp4";
+import liveVideoWebm from "@/assets/astra-download-live.webm";
 import livePoster from "@/assets/astra-download-live-poster.jpg";
 
 // Starting totals confirmed by the developer; real downloads/ratings from this site are added on top.
@@ -180,6 +182,39 @@ function HeroDownload() {
       <span className="sr-only" role="status" aria-live="polite">{wait !== null ? `Your download starts automatically in about ${Math.ceil(wait / 5) * 5} seconds` : started ? "Download started" : ""}</span>
       {wait !== null && <span className="wait-bar" aria-hidden="true"><b style={{ width: `${((WAIT_SECONDS - wait) / WAIT_SECONDS) * 100}%` }} /></span>}
     </a>
+  );
+}
+
+// Live wallpaper behind the download band. The poster shows instantly; the video loads only on capable devices
+// (not "lite" ones), starts when the band scrolls into view and pauses when it leaves, so it costs nothing elsewhere.
+function BandLive() {
+  const ref = useRef<HTMLVideoElement>(null);
+  const [useVideo, setUseVideo] = useState(false);
+  useEffect(() => {
+    const reduce = typeof window.matchMedia === "function" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!isLite() && !reduce) setUseVideo(true);
+  }, []);
+  useEffect(() => {
+    const v = ref.current;
+    if (!useVideo || !v || typeof IntersectionObserver === "undefined") return;
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) v.play().catch(() => {});
+        else v.pause();
+      });
+    }, { rootMargin: "160px 0px" });
+    io.observe(v);
+    return () => io.disconnect();
+  }, [useVideo]);
+  return (
+    <div className="band-live" aria-hidden="true">
+      <img src={livePoster} alt="" width={640} height={360} loading="lazy" decoding="async" />
+      {useVideo && (
+        <video ref={ref} poster={livePoster} muted loop playsInline preload="metadata" disablePictureInPicture>
+          <source src={liveVideoWebm} type="video/webm" /><source src={liveVideo} type="video/mp4" />
+        </video>
+      )}
+    </div>
   );
 }
 
@@ -533,7 +568,7 @@ function AstraPage() {
       </section>
 
       <section id="get" className="download-band" data-reveal>
-        <div className="band-live" aria-hidden="true"><img src={livePoster} alt="" width={640} height={360} loading="lazy" decoding="async" /></div>
+        <BandLive />
         <div className="download-copy"><img src="/favicon.png" alt="" width={86} height={86} /><div><span>ASTRA MUSIC FOR ANDROID</span><h2><Words text="Turn up your everyday." /></h2><p>Download the latest Astra APK and start listening.</p></div></div>
         <div className="download-side">
           <a className="band-download" href={DOWNLOAD_URL} onClick={bottomDownload}><Smartphone size={20} /> Download APK</a>

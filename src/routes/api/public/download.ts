@@ -6,6 +6,8 @@ const FALLBACK = `https://github.com/${REPO}/releases/latest/download/astra-musi
 // Astra TV is released from its own repo (https://github.com/shivam-s01/AurumTV/releases). Its APK is named like
 // "AstraTV-1.1.0-b69.apk". Override with the ASTRA_TV_REPO env var if the repo ever moves.
 const TV_REPO_DEFAULT = "shivam-s01/AurumTV";
+// Known direct file, used if GitHub's API is unreachable, so the button always downloads instead of opening a page.
+const TV_FALLBACK = "https://github.com/shivam-s01/AurumTV/releases/download/tv-build69/AstraTV-1.1.0-b69.apk";
 
 type Asset = { name: string; browser_download_url: string };
 const cache = new Map<string, { url: string; at: number }>();
@@ -16,12 +18,14 @@ async function latestApkUrl(repo: string, device: "phone" | "tv"): Promise<strin
   const key = `${repo}:${device}`;
   const hit = cache.get(key);
   if (hit && Date.now() - hit.at < 5 * 60 * 1000) return hit.url;
-  const res = await fetch(`https://api.github.com/repos/${repo}/releases/latest`, {
+  // list (not /latest): a pre-release or oddly tagged build would make /latest return 404
+  const res = await fetch(`https://api.github.com/repos/${repo}/releases?per_page=10`, {
     headers: { Accept: "application/vnd.github+json", "User-Agent": "astra-music-site" },
   });
   if (!res.ok) return null;
-  const data = (await res.json()) as { assets?: Asset[] };
-  const apks = (data.assets ?? []).filter((a) => /\.apk$/i.test(a.name));
+  const list = (await res.json()) as { draft?: boolean; assets?: Asset[] }[];
+  const rel = list.find((r) => !r.draft && (r.assets ?? []).some((a) => /\.apk$/i.test(a.name)));
+  const apks = (rel?.assets ?? []).filter((a) => /\.apk$/i.test(a.name));
   let pick: Asset | undefined;
   if (device === "tv") {
     // the newest release carries one APK; prefer one with "tv" in its name, else take the first
@@ -46,8 +50,7 @@ export const Route = createFileRoute("/api/public/download")({
         const repo = device === "tv" ? tvRepo : REPO;
         let target: string | null = null;
         try { target = await latestApkUrl(repo, device); } catch (e) { console.error("[download]", e); }
-        // phone: known direct file; TV: the releases page if no TV APK is found yet (never a dead link)
-        const fallback = device === "tv" ? `https://github.com/${repo}/releases/latest` : FALLBACK;
+        const fallback = device === "tv" ? TV_FALLBACK : FALLBACK;
         return new Response(null, {
           status: 302,
           headers: { Location: target ?? fallback, "Cache-Control": "no-store" },
