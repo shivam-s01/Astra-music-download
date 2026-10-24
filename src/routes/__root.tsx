@@ -78,6 +78,8 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
   head: () => ({
+    // Marks weak phones and TVs as "lite" before first paint: the page then skips ambient animation and parallax.
+    scripts: [{ children: '(function(){try{var n=navigator,u=n.userAgent||"";var l=(n.deviceMemory&&n.deviceMemory<=2)||(n.hardwareConcurrency&&n.hardwareConcurrency<=4)||/SMART-TV|SmartTV|Android.*TV|AFT[A-Z]|BRAVIA|Tizen|Web0S|HbbTV|CrKey|GoogleTV|Roku|MiTV|AndroidTV/i.test(u);if(l)document.documentElement.className+=" lite"}catch(e){}})()' }],
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },

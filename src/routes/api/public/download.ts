@@ -3,10 +3,9 @@ import { createFileRoute } from "@tanstack/react-router";
 const REPO = "shivam-s01/Aurum-app";
 const FALLBACK = `https://github.com/${REPO}/releases/latest/download/astra-music-arm64-v8a-release.apk`;
 
-// Astra TV. By default its APK is looked up in the SAME GitHub release as the phone app (any .apk with "tv" in
-// its name). If the TV app is released from a different repo, set the ASTRA_TV_REPO env var (e.g. "shivam-s01/AstraTV")
-// in Cloudflare, or change the default below.
-const TV_REPO_DEFAULT = REPO;
+// Astra TV is released from its own repo (https://github.com/shivam-s01/AurumTV/releases). Its APK is named like
+// "AstraTV-1.1.0-b69.apk". Override with the ASTRA_TV_REPO env var if the repo ever moves.
+const TV_REPO_DEFAULT = "shivam-s01/AurumTV";
 
 type Asset = { name: string; browser_download_url: string };
 const cache = new Map<string, { url: string; at: number }>();
@@ -25,7 +24,8 @@ async function latestApkUrl(repo: string, device: "phone" | "tv"): Promise<strin
   const apks = (data.assets ?? []).filter((a) => /\.apk$/i.test(a.name));
   let pick: Asset | undefined;
   if (device === "tv") {
-    pick = apks.find((a) => /tv/i.test(a.name));
+    // the newest release carries one APK; prefer one with "tv" in its name, else take the first
+    pick = apks.find((a) => /tv/i.test(a.name)) ?? apks[0];
   } else {
     // the phone button must never hand out the TV build
     const phone = apks.filter((a) => !/tv/i.test(a.name));
