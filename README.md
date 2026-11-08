@@ -1,18 +1,20 @@
-# Welcome to your Lovable project
+# Astra Music
 
-This project was built with [Lovable](https://lovable.dev).
+Download page and website for **Astra**, a free music streaming app for Android.
 
-## Build with Lovable
+Live site: https://astra.mmusic.workers.dev
 
-Open your project in the [Lovable editor](https://lovable.dev) and keep building.
+## What is in here
 
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: connect the project to GitHub and every change made in Lovable is committed straight to your repository.
-- **Full ownership**: this code is yours. Push to your repository and your changes sync back into Lovable, ready for your next prompt.
+- Download page with the latest APK
+- Privacy policy, terms, support and contact pages
+- Jam invite links: `/jam/<code>`
+- Song share links: `/s/<code>`
+- Admin page for comments and download stats
 
 ## Development
 
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
+You need Node.js and npm ([install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)).
 
 ```sh
 git clone <this-repository-url>
@@ -27,3 +29,5 @@ npm run dev
 - TypeScript
 - React
 - Tailwind CSS
+- Supabase
+- Cloudflare Workers
