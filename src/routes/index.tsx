@@ -46,7 +46,7 @@ export const Route = createFileRoute("/")({
       { name: "description", content: "Download Astra Music for Android — free music player app. Get the latest official Astra Music APK, discover songs and build your library. Direct download from the official GitHub release." },
       { name: "keywords", content: "Astra Music, Astra Music download, Astra Music APK, Astra Music app, Astra Music Android, free music player APK" },
       { name: "robots", content: "index, follow, max-image-preview:large" },
-      { name: "theme-color", content: "#0b0b10" },
+      { name: "theme-color", content: "#fafaf9" },
       { property: "og:site_name", content: "Astra Music" },
       { property: "og:title", content: "Astra Music Download — Free Android Music Player APK" },
       { property: "og:description", content: "Download the latest official Astra Music APK for Android." },

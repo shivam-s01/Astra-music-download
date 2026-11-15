@@ -51,9 +51,9 @@ const ICON_DOWNLOAD =
 
 
 const CSS = `
-:root{--bg:#fff6e2;--fg:#1e1734;--brand:#f95100;--brand-dk:#b23a00;--sun:#ffc921;--lilac:#9a79fe;--aqua:#00caac;
-  --muted:#5c5b71;--card:#fff;--soft:#ffe8ba;--line:rgba(30,23,52,.14);
-  --display:"Fredoka",ui-rounded,"Segoe UI",system-ui,sans-serif;--body:"DM Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+:root{--bg:#fafaf9;--fg:#111114;--brand:#dd5316;--brand-dk:#a63d0e;--sun:#f1f0ee;--lilac:#55555e;--aqua:#e8f5ec;
+  --muted:#5b5b66;--card:#fff;--soft:#f3f2f0;--line:rgba(17,17,20,.1);
+  --display:"DM Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;--body:"DM Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{-webkit-text-size-adjust:100%;overflow-x:clip}
 body{margin:0;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;background:var(--bg);color:var(--fg);
@@ -126,6 +126,34 @@ html.is-webview .tip{display:block}
 .cover img{width:100%;height:100%;object-fit:cover;display:block}
 h1.song{font-size:clamp(28px,8.5vw,38px);line-height:1.04;margin:16px 0 8px;overflow-wrap:anywhere;text-wrap:balance}
 .artist{margin:0 auto 22px;max-width:380px;color:var(--muted);font-size:17px;font-weight:500;overflow-wrap:anywhere}
+
+/* PRO SKIN: restrained, professional (same behaviour and animations) */
+::selection{background:rgba(221,83,22,.2)}
+:focus-visible{outline:2px solid var(--brand);outline-offset:3px}
+.brand{letter-spacing:-.02em}
+.brand img{box-shadow:0 1px 2px rgba(0,0,0,.18),0 0 0 1px rgba(0,0,0,.06)}
+.blob{display:none}
+.card{border:1px solid var(--line);border-radius:24px;box-shadow:0 1px 2px rgba(0,0,0,.04),0 40px 70px -40px rgba(0,0,0,.3)}
+.note{top:-22px;transform:none;border:1px solid var(--line);border-radius:16px;background:var(--card);color:var(--brand);box-shadow:0 14px 28px -12px rgba(0,0,0,.28)}
+.pill{background:var(--card);border:1px solid var(--line);color:var(--muted);font-size:11.5px;font-weight:650;letter-spacing:.02em;text-transform:none;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.eq i{background:var(--brand)}
+h1{font-weight:700;letter-spacing:-.04em}
+h1 em{text-shadow:none}
+.ticket{background:var(--soft);border:1px solid var(--line);border-radius:16px}
+.ticket small{font-weight:700}
+.copy{border:1px solid rgba(17,17,20,.16);border-radius:12px;box-shadow:0 1px 2px rgba(0,0,0,.06)}
+.copy:active{transform:translateY(1px);box-shadow:none}
+.copy.done{background:var(--aqua);border-color:rgba(31,122,69,.4);color:#1f7a45}
+.btn{border-radius:13px;font-weight:650;letter-spacing:-.01em}
+.btn.primary{background:var(--brand);box-shadow:0 1px 0 rgba(255,255,255,.22) inset,0 12px 24px -10px rgba(221,83,22,.7)}
+.btn.primary:active{transform:translateY(1px);box-shadow:0 1px 0 rgba(255,255,255,.18) inset,0 4px 10px -6px rgba(221,83,22,.7)}
+@media (hover:hover){.btn.primary:hover{transform:translateY(-1px);box-shadow:0 1px 0 rgba(255,255,255,.22) inset,0 18px 30px -12px rgba(221,83,22,.75)}.copy:hover{background:var(--soft)}}
+.btn.outline{border:1px solid rgba(17,17,20,.2);font-weight:600}
+.btn.outline:active{background:var(--soft)}
+.note-box{background:var(--soft);border:1px solid var(--line)}
+.alert{background:var(--soft);border:1px solid var(--line)}
+.steps li b{background:var(--fg);color:#fff;font-weight:650}
+.cover{border:1px solid var(--line);border-radius:20px;box-shadow:0 1px 2px rgba(0,0,0,.05),0 30px 50px -28px rgba(0,0,0,.4)}
 `;
 
 const SCRIPT = `
@@ -144,7 +172,7 @@ function head(title: string, desc: string, canonical: string, art: string): stri
   return `<meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
-<meta name="theme-color" content="#fff6e2">
+<meta name="theme-color" content="#fafaf9">
 <title>${esc(title)}</title>
 <meta name="description" content="${esc(desc)}">
 <link rel="canonical" href="${esc(canonical)}">
@@ -161,7 +189,7 @@ function head(title: string, desc: string, canonical: string, art: string): stri
 ${img}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Fredoka:wght@500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap">
 <style>${CSS}</style>`;
 }
 
@@ -194,7 +222,7 @@ export function songPage(o: PageOpts): string {
     `<a class="btn ${cls}" id="dl" href="${download}" rel="nofollow">${ICON_DOWNLOAD} ${label}</a>`;
 
   const actions = noApp
-    ? `<div class="alert"><span aria-hidden="true">📲</span><span><b>Astra isn’t installed on this phone yet.</b> Download it, open it, and this song is one tap away.</span></div>
+    ? `<div class="alert"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:none;margin-top:1px"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M12 8v6"/><path d="M9.5 11.5 12 14l2.5-2.5"/></svg><span><b>Astra isn’t installed on this phone yet.</b> Download it, open it, and this song is one tap away.</span></div>
   ${dlBtn("primary", "Download Astra")}
   ${openBtn("outline")}`
     : `${openBtn("primary")}
