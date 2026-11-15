@@ -79,6 +79,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { name: "color-scheme", content: "light dark" },
+      { name: "theme-color", content: "#fafaf9", media: "(prefers-color-scheme: light)" },
+      { name: "theme-color", content: "#0f0f12", media: "(prefers-color-scheme: dark)" },
       { title: "Astra Music" },
       { name: "description", content: "Astra Music for Android" },
       { name: "author", content: "Astra Music" },

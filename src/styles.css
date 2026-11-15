@@ -907,3 +907,40 @@ h1, h2, h3, .brand-lockup, .float-brand { font-family: var(--font-display); }
 .support-footer { border-top: 1px solid var(--sp-line); color: var(--sp-faint); }
 .support-footer strong { color: var(--sp-text); letter-spacing: .08em; }
 @media (prefers-reduced-motion: reduce) { .sp-panel, .support-avatar, .fb-list li, .fb-status { animation: none !important; } }
+
+/* ───────── Accent: calm indigo (matches the app icon). Orange removed. ───────── */
+:root { color-scheme: light dark; --primary: oklch(0.52 0.2 275); --brand: oklch(0.52 0.2 275); --ring: var(--primary); }
+.primary-download, .band-download, .floating-note { box-shadow: none; }
+.primary-download:hover, .band-download:hover { box-shadow: none; filter: brightness(1.08); }
+
+/* ───────── Dark theme (follows the browser / OS or forced-dark) ───────── */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0f0f12; --foreground: #f4f4f5; --card: #17171b; --card-foreground: #f4f4f5;
+    --secondary: #1d1d22; --muted: #1d1d22; --muted-foreground: #a1a1aa;
+    --accent: #1d1d22; --accent-foreground: #f4f4f5;
+    --border: rgb(255 255 255 / 10%);
+    --primary: oklch(0.6 0.19 275); --brand: oklch(0.6 0.19 275); --ring: var(--primary);
+    --aqua: #2a2a31; --lilac: #34343c; --sun: #1d1d22;
+    --ink: #0b0b0d; --ink-2: #17171b;
+    --primary-foreground: #fff;
+  }
+  /* surfaces that used --foreground as a dark panel stay dark */
+  .hero-phone { background: var(--ink); box-shadow: none; }
+  .screens-section, .download-band { background: var(--ink); }
+  .dark-card { background: var(--ink-2); border-color: var(--border); }
+  .band-live::after { background: linear-gradient(100deg, rgb(11 11 13 / .88) 0%, rgb(11 11 13 / .55) 55%, rgb(11 11 13 / .2) 100%); }
+  .header-download { background: var(--foreground); color: var(--background); box-shadow: none; }
+  .coffee-note, .meow-bubble { color: var(--foreground); }
+  .coffee-note { border-color: var(--border); background: var(--card); }
+  .orb-badge .cup { fill: var(--foreground); }
+  .float-nav { background: var(--card); box-shadow: 0 16px 36px -14px rgb(0 0 0 / .6); }
+  .float-nav nav a.on { background: var(--foreground); color: var(--background); }
+  .site-footer, .faq-list details { border-color: var(--border); }
+}
+/* split-word heading spans in the download band: plain heading text, not the small kicker style */
+.download-copy h2 span, .download-copy h2 .wd, .download-copy h2 .wd > span { font-size: inherit; font-weight: inherit; letter-spacing: inherit; text-transform: none; color: inherit; opacity: 1; }
+
+/* legal pages: the small kicker sits on its own line under the logo */
+.legal-page .brand-lockup { display: flex; width: fit-content; }
+.legal-page .section-kicker { display: block; }
